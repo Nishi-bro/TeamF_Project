@@ -8,9 +8,9 @@ public class BallMove : MonoBehaviour
     public Text TimeText;
     public float span = 3f;
     [SerializeField]
-    private float _speed = 20f;  // 左右のスピード
+    private float _speed = 20f;  // 左右に動くスピード
     [SerializeField]
-    private float _runspeed = 10f;  // 直進の速さ
+    private float _runspeed = 10f;  // RUNの速さ
 
     private Rigidbody _rigidbody;
     private Vector3 _currentVelocity;
@@ -20,6 +20,7 @@ public class BallMove : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
 
         StartCoroutine(DecreaseScore());
+        // 時間制限処理
     }
 
     private void FixedUpdate()
@@ -41,7 +42,7 @@ public class BallMove : MonoBehaviour
 
     private void Update()
     {
-        // 前進処理を手動で行う（左右の動作と切り離し）
+        // RUN処理 横移動処理と分けてます
         Vector3 forwardMovement = transform.forward * _runspeed * Time.deltaTime;
 
         // 現在の速度を取得
@@ -52,32 +53,32 @@ public class BallMove : MonoBehaviour
         // Rigidbodyの速度を更新
         _rigidbody.velocity = new Vector3(_currentVelocity.x, _rigidbody.velocity.y, _runspeed);
 
-        // 右下タイムの管理
-
     }
     private IEnumerator DecreaseScore()
     {
-        while (Timeman > 0)  // スコアが0以上の間繰り返す
+        while (Timeman > 0)  // 時間が0より大きい間
         {
             Timeman--;  // スコアを1減らす
-            SetCountText();  // テキストを更新する
+            SetCountText();  
             yield return new WaitForSeconds(1f);  // 1秒待つ
+            //＝1秒ごとにスコアを1減らす
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("Collided with " + collision.gameObject.name);
+        // 衝突したかどうかのチェック、記述不要
     }
     void OnTriggerEnter(Collider other)
     {
         // ぶつかったオブジェクトが岩だった場合
         if (other.gameObject.CompareTag("Rock"))
         {
-            // その収集アイテムを非表示にします
+            // 岩を非表示にします（しなくてもいいかも）
             other.gameObject.SetActive(false);
 
-            // 時間消す
+            // 時間減らします
             Timeman = Timeman - 5;
 
             // UI の表示を更新します
@@ -88,6 +89,5 @@ public class BallMove : MonoBehaviour
     {
         // スコアの表示を更新
         TimeText.text = "Time: " + Timeman.ToString();
-        
     }
 }

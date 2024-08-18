@@ -1,12 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 
-public class GameManager2 : MonoBehaviour
+public class VideoPlayerScript : MonoBehaviour
 {
-    public void StartButton()
+    public VideoPlayer videoPlayer;
+
+    void Start()
     {
+        // VideoPlayerの設定（必要に応じて）
+        videoPlayer.isLooping = false; // ループ再生しない
+        videoPlayer.Play();
+
+        // 動画終了時のイベント
+        videoPlayer.loopPointReached += VideoEnded;
+    }
+
+    void VideoEnded(VideoPlayer vp)
+    {
+        // 次のシーンへ遷移
         SceneManager.LoadScene("GameScene");
     }
 }

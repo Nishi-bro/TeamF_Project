@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class BallMove : MonoBehaviour
 {
@@ -112,7 +114,13 @@ public class BallMove : MonoBehaviour
 
             // UI の表示を更新します
             SetCountText();
-        }
+        }    
+            //Clear画面の表示
+            if (other.gameObject.CompareTag("Finish"))
+                {
+                    SceneManager.LoadScene("ClearScene");
+                }
+
     }
     void SetCountText()
     {

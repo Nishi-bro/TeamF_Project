@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 492070403}
   - component: {fileID: 492070402}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Firstfloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -478,7 +478,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 15, y: 1, z: 300}
+  m_LocalScale: {x: 15, y: 1, z: 200}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -495,7 +495,7 @@ GameObject:
   - component: {fileID: 502698106}
   - component: {fileID: 502698105}
   m_Layer: 5
-  m_Name: Timetext1
+  m_Name: Timetext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -907,9 +907,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7806ba061f433414b96d36ea3d61c087, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Timerag: 0.2
+  Timeman: 180
   TimeText: {fileID: 502698105}
   span: 3
-  _speed: 60
   _runspeed: 15
 --- !u!54 &794446314
 Rigidbody:
@@ -1647,6 +1648,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &2112810352
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2112810353}
+  m_Layer: 0
+  m_Name: randomgenerate
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2112810353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2112810352}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.821803, y: 5.5409393, z: 118.51237}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5953163450162263853
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1721,3 +1753,4 @@ SceneRoots:
   - {fileID: 1462927975}
   - {fileID: 343770335}
   - {fileID: 452306615}
+  - {fileID: 2112810353}

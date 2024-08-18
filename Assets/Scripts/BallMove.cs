@@ -9,11 +9,11 @@ public class BallMove : MonoBehaviour
     public float Timerag = 0.2f; // 移動にかかる時間 
 
     public float Timeman = 180;
-    private Text TimeText;
+    public Text TimeText;
     public float span = 3f;
     
-    [SerializeField]
-    private float _speed = 20f;  // 左右に動くスピード
+    //[SerializeField]
+    //private float _speed = 20f;  // 左右に動くスピード
     [SerializeField]
     private float _runspeed = 10f;  // RUNの速さ
 
@@ -22,15 +22,12 @@ public class BallMove : MonoBehaviour
 
     private void Start()
     {
-
         _rigidbody = GetComponent<Rigidbody>();
 
         StartCoroutine(DecreaseScore());
         // 時間制限処理
+        TimeText.text = "Time: " + Timeman.ToString();
     }
-
-    
-
 
     private void Update()
     {
@@ -80,7 +77,7 @@ public class BallMove : MonoBehaviour
         }
         transform.position = targetPosition;
 
-        isMoving = false;  // 移動完了フラグをオフ
+        isMoving = false;  // 移動完了
     }
 
     private IEnumerator DecreaseScore()
@@ -113,10 +110,16 @@ public class BallMove : MonoBehaviour
             // UI の表示を更新します
             SetCountText();
         }
+        if (other.gameObject.CompareTag("Finish"))
+        {
+                
+        }
     }
     void SetCountText()
     {
-        // スコアの表示を更新
-        TimeText.text = "Time: " + Timeman.ToString();
+        if (TimeText != null)
+        {
+            TimeText.text = "Time: " + Timeman.ToString();
+        }
     }
 }

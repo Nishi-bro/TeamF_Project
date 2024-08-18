@@ -4,9 +4,14 @@ using UnityEngine.UI;
 
 public class BallMove : MonoBehaviour
 {
-    private float Timeman = 180;
-    public Text TimeText;
+    private int ManageTransform = 0;
+    private bool isMoving = false;
+    public float Timerag = 0.2f; // 移動にかかる時間 
+
+    public float Timeman = 180;
+    private Text TimeText;
     public float span = 3f;
+    
     [SerializeField]
     private float _speed = 20f;  // 左右に動くスピード
     [SerializeField]
@@ -17,31 +22,35 @@ public class BallMove : MonoBehaviour
 
     private void Start()
     {
+
         _rigidbody = GetComponent<Rigidbody>();
 
         StartCoroutine(DecreaseScore());
         // 時間制限処理
     }
 
-    private void FixedUpdate()
-    {
-        // 横移動処理
-        Vector3 horizontalVelocity = Vector3.zero;
-        if (Input.GetKey(KeyCode.A))
-        {
-            horizontalVelocity.x = -_speed;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            horizontalVelocity.x = _speed;
-        }
+    
 
-        // Rigidbodyの物理演算による横移動
-        _rigidbody.velocity = new Vector3(horizontalVelocity.x, _rigidbody.velocity.y, _runspeed);
-    }
 
     private void Update()
     {
+        if (isMoving)
+        {
+            return; // 移動中は新たな入力を無視
+        }
+        // 左キーを押した時の動き
+        if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1)
+        {
+            StartCoroutine(MovePlayer(-transform.right)); // 左に動くコルーチンを開始
+            ManageTransform -= 1;
+        }
+
+        // 右キーを押した時の動き
+        if (Input.GetKeyDown(KeyCode.D) && ManageTransform < 1)
+        {
+            StartCoroutine(MovePlayer(transform.right)); // 左に動くコルーチンを開始
+            ManageTransform += 1;
+        }
         // RUN処理 横移動処理と分けてます
         Vector3 forwardMovement = transform.forward * _runspeed * Time.deltaTime;
 
@@ -52,8 +61,28 @@ public class BallMove : MonoBehaviour
 
         // Rigidbodyの速度を更新
         _rigidbody.velocity = new Vector3(_currentVelocity.x, _rigidbody.velocity.y, _runspeed);
-
     }
+    
+    //コルーチン
+    private IEnumerator MovePlayer(Vector3 direction)
+    {
+        isMoving = true;  // 移動中フラグをオン
+        Vector3 startPosition = transform.position;
+        Vector3 targetPosition = startPosition + direction * 3;
+
+        float elapsedTime = 0;
+
+        while (elapsedTime < Timerag)
+        {
+            transform.position = Vector3.Lerp(startPosition, targetPosition, elapsedTime / Timerag);
+            elapsedTime += Time.deltaTime;
+            yield return null; // 次のフレームまで待機
+        }
+        transform.position = targetPosition;
+
+        isMoving = false;  // 移動完了フラグをオフ
+    }
+
     private IEnumerator DecreaseScore()
     {
         while (Timeman > 0)  // 時間が0より大きい間

@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-
 public class BallMove : MonoBehaviour
 {
     private int ManageTransform = 0;
@@ -13,7 +12,12 @@ public class BallMove : MonoBehaviour
     public float Timeman = 180;
     public Text TimeText;
     public float span = 3f;
-    
+
+    public GameObject Floor1; // Street1のプレハブ
+    public GameObject Floor2; // Street2のプレハブ
+    private int nextSpawnZ = 50; // 次に生成するZ位置の初期値
+
+
     //[SerializeField]
     //private float _speed = 20f;  // 左右に動くスピード
     [SerializeField]
@@ -60,8 +64,24 @@ public class BallMove : MonoBehaviour
 
         // Rigidbodyの速度を更新
         _rigidbody.velocity = new Vector3(_currentVelocity.x, _rigidbody.velocity.y, _runspeed);
+
+        if (transform.position.z >= nextSpawnZ)
+        {
+            SpawnStreet(); // ストリートを生成
+            nextSpawnZ += 100; // 次の生成位置を更新
+        }
     }
-    
+
+    void SpawnStreet()
+    {
+        // ランダムにStreet1またはStreet2を選択
+        GameObject streetPrefab = Random.value > 0.5f ? Floor1 : Floor2;
+
+        // 新しいストリートを生成
+        Vector3 spawnPosition = new Vector3(0, 0, nextSpawnZ + 100); // 生成位置を設定
+        Instantiate(streetPrefab, spawnPosition, Quaternion.identity); // プレハブを生成
+    }
+
     //コルーチン
     private IEnumerator MovePlayer(Vector3 direction)
     {
@@ -111,12 +131,12 @@ public class BallMove : MonoBehaviour
 
             // UI の表示を更新します
             SetCountText();
-        }    
-            //Clear画面の表示
-            if (other.gameObject.CompareTag("Finish"))
-                {
-                    SceneManager.LoadScene("ClearScene");
-                }
+        }
+        //Clear画面の表示
+        if (other.gameObject.CompareTag("Finish"))
+        {
+            SceneManager.LoadScene("ClearScene");
+        }
     }
     void SetCountText()
     {

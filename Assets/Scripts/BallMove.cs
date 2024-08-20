@@ -12,13 +12,16 @@ public class BallMove : MonoBehaviour
     public float Timeman = 180;
     public Text TimeText;
     public float span = 3f;
+    System.Random random_man = new System.Random();
+
 
     public GameObject Rock; // Street1のプレハブ
     public GameObject Heart; // Street2のプレハブ
+    private bool _xBarrier, Barrier, xBarrier;
     private int nextSpawnZ = 30; // 次に生成するZ位置の初期値
 
 
-    //[SerializeField]
+    //[SerializeField] 
     //private float _speed = 20f;  // 左右に動くスピード
     [SerializeField]
     private float _runspeed = 10f;  // RUNの速さ
@@ -74,12 +77,43 @@ public class BallMove : MonoBehaviour
 
     void SpawnBarrier()
     {
-        // ランダムにStreet1またはStreet2を選択
-        GameObject streetBarrier = Random.value > 0.9f ? Rock : Heart;
+        // ランダム障害物生成のコード、80％の確率で障害物生成
+        _xBarrier = Random.value < 0.6f ? true : false;//x=-3
+        Barrier = Random.value < 0.6f ? true : false;//x=0
+        xBarrier = Random.value < 0.6f ? true : false;//x=3
+        
+        if (_xBarrier == true && Barrier == true && xBarrier == true)
+        {
+            int? except;
+            except = random_man.Next(1,3);
+            if (except == 1)
+                _xBarrier = false;
+            else if (except == 2)
+                Barrier = false;
+            else
+                xBarrier = false;
+        }
+         //streetBarrier xstreetBarrier
 
-        // 新しいストリートを生成
-        Vector3 spawnPosition = new Vector3(0, 0, nextSpawnZ + 60); // 生成位置を設定
-        Instantiate(streetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
+        // 新しい障害物を 生成
+        if (_xBarrier != false)
+        {
+            GameObject _xstreetBarrier = Rock;
+            Vector3 spawnPosition = new Vector3(-3, 2, nextSpawnZ + 60); // 生成位置を設定
+            Instantiate(_xstreetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
+        }
+        if (Barrier != false)
+        {
+            GameObject streetBarrier = Rock;
+            Vector3 spawnPosition = new Vector3(0, 2, nextSpawnZ + 60); // 生成位置を設定
+            Instantiate(streetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
+        }
+        if (xBarrier != false)
+        {
+            GameObject xstreetBarrier = Rock;
+            Vector3 spawnPosition = new Vector3(3, 2, nextSpawnZ + 60); // 生成位置を設定
+            Instantiate(xstreetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
+        } 
     }
 
     //コルーチン
@@ -131,6 +165,11 @@ public class BallMove : MonoBehaviour
 
             // UI の表示を更新します
             SetCountText();
+        }// ぶつかったオブジェクトが岩だった場合
+
+        if (other.gameObject.CompareTag("Cars"))
+        {
+            SceneManager.LoadScene("GameOverscene");
         }
         //Clear画面の表示
         if (other.gameObject.CompareTag("Finish"))

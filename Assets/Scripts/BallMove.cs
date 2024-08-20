@@ -13,9 +13,9 @@ public class BallMove : MonoBehaviour
     public Text TimeText;
     public float span = 3f;
 
-    public GameObject Floor1; // Street1のプレハブ
-    public GameObject Floor2; // Street2のプレハブ
-    private int nextSpawnZ = 50; // 次に生成するZ位置の初期値
+    public GameObject Rock; // Street1のプレハブ
+    public GameObject Heart; // Street2のプレハブ
+    private int nextSpawnZ = 30; // 次に生成するZ位置の初期値
 
 
     //[SerializeField]
@@ -67,19 +67,19 @@ public class BallMove : MonoBehaviour
 
         if (transform.position.z >= nextSpawnZ)
         {
-            SpawnStreet(); // ストリートを生成
-            nextSpawnZ += 100; // 次の生成位置を更新
+            SpawnBarrier(); // ストリートを生成
+            nextSpawnZ += 15; // 次の生成位置を更新
         }
     }
 
-    void SpawnStreet()
+    void SpawnBarrier()
     {
         // ランダムにStreet1またはStreet2を選択
-        GameObject streetPrefab = Random.value > 0.5f ? Floor1 : Floor2;
+        GameObject streetBarrier = Random.value > 0.9f ? Rock : Heart;
 
         // 新しいストリートを生成
-        Vector3 spawnPosition = new Vector3(0, 0, nextSpawnZ + 100); // 生成位置を設定
-        Instantiate(streetPrefab, spawnPosition, Quaternion.identity); // プレハブを生成
+        Vector3 spawnPosition = new Vector3(0, 0, nextSpawnZ + 60); // 生成位置を設定
+        Instantiate(streetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
     }
 
     //コルーチン

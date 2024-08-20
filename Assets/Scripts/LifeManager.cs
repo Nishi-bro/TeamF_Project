@@ -4,21 +4,32 @@ using UnityEngine;
 
 public class LifeManager : MonoBehaviour
 {
-    public GameObject[] lifeArray = new GameObject[3];
-    private int lifePoint = 3;
+    //　ライフゲージプレハブ
+    [SerializeField]
+    private GameObject Heart;
 
-    void Update()
+    //　ライフゲージ全削除＆HP分作成
+    public void SetLifeGauge(int life)
     {
-        if (Input.GetMouseButtonDown(0) && lifePoint < 3)
+        //　体力を一旦全削除
+        for (int i = 0; i < transform.childCount; i++)
         {
-            lifePoint++;
-            lifeArray[lifePoint - 1].SetActive(true);
+            Destroy(transform.GetChild(i).gameObject);
         }
-
-        else if (Input.GetMouseButtonDown(1) && lifePoint > 0)
+        //　現在の体力数分のライフゲージを作成
+        for (int i = 0; i < life; i++)
         {
-            lifeArray[lifePoint - 1].SetActive(false);
-            lifePoint--;
+            Instantiate<GameObject>(Heart, transform);
+        }
+    }
+    //　ダメージ分だけ削除
+    public void SetLifeGauge2(int damage)
+    {
+        for (int i = 0; i < damage; i++)
+        {
+            //　最後のライフゲージを削除
+            Destroy(transform.GetChild(i).gameObject);
+            //Destroy(transform.GetChild(transform.childCount - 1 - i).gameObject);
         }
     }
 }

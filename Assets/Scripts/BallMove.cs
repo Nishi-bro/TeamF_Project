@@ -15,14 +15,14 @@ public class BallMove : MonoBehaviour
     System.Random random_man = new System.Random();
 
 
-    public GameObject Rock; // Street1のプレハブ
-    public GameObject Heart; // Street2のプレハブ
+    [SerializeField]
+    private Slider hpSlider;
+
+    public GameObject Rock; //　岩のプレハブ
+    public GameObject Heart; // ハートのプレハブ
     private bool _xBarrier, Barrier, xBarrier;
     private int nextSpawnZ = 30; // 次に生成するZ位置の初期値
 
-
-    //[SerializeField] 
-    //private float _speed = 20f;  // 左右に動くスピード
     [SerializeField]
     private float _runspeed = 10f;  // RUNの速さ
 
@@ -71,11 +71,11 @@ public class BallMove : MonoBehaviour
         if (transform.position.z >= nextSpawnZ)
         {
             SpawnBarrier(); // ストリートを生成
-            nextSpawnZ += 15; // 次の生成位置を更新
+            nextSpawnZ += 20; // 次の生成位置を更新
         }
     }
 
-    void SpawnBarrier()
+    void SpawnBarrier()// 西田担当、障害物の自動生成部
     {
         // ランダム障害物生成のコード、80％の確率で障害物生成
         _xBarrier = Random.value < 0.6f ? true : false;//x=-3
@@ -105,14 +105,14 @@ public class BallMove : MonoBehaviour
         if (Barrier != false)
         {
             GameObject streetBarrier = Rock;
-            Vector3 spawnPosition = new Vector3(0, 2, nextSpawnZ + 60); // 生成位置を設定
-            Instantiate(streetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
+            Vector3 spawnPosition = new Vector3(0, 2, nextSpawnZ + 60);
+            Instantiate(streetBarrier, spawnPosition, Quaternion.identity); // 座標違うが同上
         }
         if (xBarrier != false)
         {
             GameObject xstreetBarrier = Rock;
-            Vector3 spawnPosition = new Vector3(3, 2, nextSpawnZ + 60); // 生成位置を設定
-            Instantiate(xstreetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
+            Vector3 spawnPosition = new Vector3(3, 2, nextSpawnZ + 60);
+            Instantiate(xstreetBarrier, spawnPosition, Quaternion.identity);  // 座標違うが同上
         } 
     }
 
@@ -162,6 +162,8 @@ public class BallMove : MonoBehaviour
 
             // 時間減らします
             Timeman = Timeman - 5;
+
+            hpSlider.value -= 20; 
 
             // UI の表示を更新します
             SetCountText();

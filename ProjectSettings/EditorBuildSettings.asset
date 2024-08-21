@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameOverscene.unity
     guid: 2d044b6e5b9de4bf486f5573acbcd3c2
+  - enabled: 1
+    path: Assets/Scenes/GameOverCar.unity
+    guid: 3ce3a427f57f54c859db2bd40b8bf4a8
+  - enabled: 1
+    path: Assets/Scenes/GameOverTime.unity
+    guid: c2b9d6691298c4373b94d352d27c76cb
   m_configObjects: {}

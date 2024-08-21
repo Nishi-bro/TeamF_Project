@@ -1318,7 +1318,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timerag: 0.2
-  Timeman: 180
+  RimitTime: 100
   TimeText: {fileID: 502698105}
   span: 3
   hpSlider: {fileID: 143589239}

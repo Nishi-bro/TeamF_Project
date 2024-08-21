@@ -5,33 +5,29 @@ using UnityEngine.SceneManagement;
 
 public class BallMove : MonoBehaviour
 {
-    private float WaitingTime = 1f; // キー入力を無視する時間（秒）
-    private float FirstTime = 0f; // 最初に操作を受け付けない時間
-    private bool canReceiveInput = false; // 入力を受け付けるかどうか
-
     private int ManageTransform = 0;
     private bool isMoving = false;
-    public float Timerag = 0.2f; // 移動にかかる時間 
+    public float Timerag = 0.2f; // 移動にかかる時間の関数 
 
-    public float Timeman = 180;
-    public Text TimeText;
-    public float span = 3f;
-    System.Random random_man = new System.Random();
-
-
-    [SerializeField]
-    private Slider hpSlider;
+    public float RimitTime = 180;
+    public Text TimeText;//時間管理に使う関数
 
     public GameObject Rock; //　岩のプレハブ
     public GameObject Heart; // ハートのプレハブ
     private bool _xBarrier, Barrier, xBarrier;
     private int nextSpawnZ = 30; // 次に生成するZ位置の初期値
+    System.Random random_man = new System.Random(); //障害物のランダム生成に使う
+
+    
+    [SerializeField]
+    private Slider hpSlider;
+    private float hpmanage = 100;//HP管理に使う
+
 
     [SerializeField]
-    private float _runspeed = 10f;  // RUNの速さ
+    private float _runspeed = 10f;  // RUNの速さ（
 
-    private Rigidbody _rigidbody;
-    private Vector3 _currentVelocity;
+    private Rigidbody _rigidbody;// 物理判定に使う
 
     private void Start()
     {
@@ -39,7 +35,7 @@ public class BallMove : MonoBehaviour
 
         StartCoroutine(DecreaseScore());
         // 時間制限処理
-        TimeText.text = "Time: " + Timeman.ToString();
+        TimeText.text = "Time: " + RimitTime.ToString();
     }
 
     private void Update()
@@ -47,14 +43,14 @@ public class BallMove : MonoBehaviour
         if(!isMoving)
         {
             // 左キーを押した時の動き
-            if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1 && canReceiveInput)
+            if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1)
             {
                 StartCoroutine(MovePlayer(-transform.right)); // 左に動くコルーチンを開始
                 ManageTransform -= 1;
             }
 
             // 右キーを押した時の動き
-            if (Input.GetKeyDown(KeyCode.D) && ManageTransform < 1 && canReceiveInput)
+            if (Input.GetKeyDown(KeyCode.D) && ManageTransform < 1)
             {
                 StartCoroutine(MovePlayer(transform.right)); // 左に動くコルーチンを開始
                 ManageTransform += 1;
@@ -62,21 +58,21 @@ public class BallMove : MonoBehaviour
         }
         MoveForward();
         // RUN処理 横移動処理と分けてます
-        
-
-        
-        FirstTime += Time.deltaTime;
-        // 1秒経過したら入力を受け付けるようにする
-        if (FirstTime >= WaitingTime)
-        {
-            canReceiveInput = true;
-        }
-
 
         if (transform.position.z >= nextSpawnZ )
         {
-            SpawnBarrier(); // 障害物を生成
+            SpawnBarrier(); // 障害物を生成する処理
             nextSpawnZ += 20; // 次の生成位置を更新
+        }
+        if(hpmanage <= 0)
+        {
+            //hp0でシーン遷移
+            SceneManager.LoadScene("GameOverscene");
+        }
+        if (RimitTime <= 0)
+        {
+            //Time0でシーン遷移
+            SceneManager.LoadScene("GameOverTime");
         }
     }
 
@@ -84,7 +80,9 @@ public class BallMove : MonoBehaviour
     {
         Vector3 forwardMovement = Vector3.forward * _runspeed * Time.deltaTime;
         _rigidbody.MovePosition(_rigidbody.position + forwardMovement);
-    }
+    }//RUNの処理
+
+
     //コルーチン
     private IEnumerator MovePlayer(Vector3 direction)
     {
@@ -105,16 +103,20 @@ public class BallMove : MonoBehaviour
         isMoving = false;  // 移動完了
     }
 
+
+
     private IEnumerator DecreaseScore()
     {
-        while (Timeman > 0)  // 時間が0より大きい間
+        while (RimitTime > 0)  // 時間が0より大きい間
         {
-            Timeman--;  // スコアを1減らす
+            RimitTime--;  // スコアを1減らす
             SetCountText();  
             yield return new WaitForSeconds(1f);  // 1秒待つ
             //＝1秒ごとにスコアを1減らす
         }
     }
+
+
 
     // 以下西田担当、障害物の自動生成,判定部
     void SpawnBarrier()
@@ -137,7 +139,6 @@ public class BallMove : MonoBehaviour
                 xBarrier = false;
             // 出た数字によってレーンの障害物生成を中止
         }
-        //streetBarrier xstreetBarrier
 
         // 新しい障害物を 生成
         if (_xBarrier != false)
@@ -169,9 +170,11 @@ public class BallMove : MonoBehaviour
             other.gameObject.SetActive(false);
 
             // 時間減らします
-            Timeman = Timeman - 5;
+            RimitTime = RimitTime - 5;
 
-            hpSlider.value -= 20; 
+            // ハート1個減らします
+            hpSlider.value -= 20;
+            hpmanage -= 20;
 
             // UI の表示を更新します
             SetCountText();
@@ -179,7 +182,7 @@ public class BallMove : MonoBehaviour
         // ぶつかったオブジェクトが車だった場合　即ゲームオーバー
         if (other.gameObject.CompareTag("Cars"))
         {
-            SceneManager.LoadScene("GameOverscene");
+            SceneManager.LoadScene("GameOverCar");
         }
         //ぶつかったオブジェクトがゴールだった場合　Clear画面の表示
         if (other.gameObject.CompareTag("Finish"))
@@ -191,7 +194,7 @@ public class BallMove : MonoBehaviour
     {
         if (TimeText != null)
         {
-            TimeText.text = "Time: " + Timeman.ToString();
+            TimeText.text = "Time: " + RimitTime.ToString();//右下の時間テキストの更新
         }
     }
 }

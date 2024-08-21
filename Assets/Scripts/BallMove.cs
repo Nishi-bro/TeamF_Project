@@ -44,34 +44,27 @@ public class BallMove : MonoBehaviour
 
     private void Update()
     {
-        if (isMoving)
+        if(!isMoving)
         {
-            return; // 移動中は新たな入力を無視
-        }
-        // 左キーを押した時の動き
-        if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1 && canReceiveInput)
-        {
-            StartCoroutine(MovePlayer(-transform.right)); // 左に動くコルーチンを開始
-            ManageTransform -= 1;
-        }
+            // 左キーを押した時の動き
+            if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1 && canReceiveInput)
+            {
+                StartCoroutine(MovePlayer(-transform.right)); // 左に動くコルーチンを開始
+                ManageTransform -= 1;
+            }
 
-        // 右キーを押した時の動き
-        if (Input.GetKeyDown(KeyCode.D) && ManageTransform < 1 && canReceiveInput)
-        {
-            StartCoroutine(MovePlayer(transform.right)); // 左に動くコルーチンを開始
-            ManageTransform += 1;
+            // 右キーを押した時の動き
+            if (Input.GetKeyDown(KeyCode.D) && ManageTransform < 1 && canReceiveInput)
+            {
+                StartCoroutine(MovePlayer(transform.right)); // 左に動くコルーチンを開始
+                ManageTransform += 1;
+            }
         }
+        MoveForward();
         // RUN処理 横移動処理と分けてます
-        Vector3 forwardMovement = transform.forward * _runspeed * Time.deltaTime;
+        
 
-        // 現在の速度を取得
-        _currentVelocity = _rigidbody.velocity;
-        // 前進の移動処理を行う
-        transform.position += forwardMovement;
-
-        // Rigidbodyの速度を更新
-        _rigidbody.velocity = new Vector3(_currentVelocity.x, _rigidbody.velocity.y, _runspeed);
-
+        
         FirstTime += Time.deltaTime;
         // 1秒経過したら入力を受け付けるようにする
         if (FirstTime >= WaitingTime)
@@ -87,6 +80,11 @@ public class BallMove : MonoBehaviour
         }
     }
 
+    private void MoveForward()
+    {
+        Vector3 forwardMovement = Vector3.forward * _runspeed * Time.deltaTime;
+        _rigidbody.MovePosition(_rigidbody.position + forwardMovement);
+    }
     //コルーチン
     private IEnumerator MovePlayer(Vector3 direction)
     {
@@ -94,15 +92,15 @@ public class BallMove : MonoBehaviour
         Vector3 startPosition = transform.position;
         Vector3 targetPosition = startPosition + direction * 3;//横に3移動
 
-        float consumeTime = 0;
-        //移動中はどのキーも干渉しないように 
+        float consumeTime = 0f;
+        //移動中はどのキーも干渉しないように
         while (consumeTime < Timerag)
         {
-            transform.position = Vector3.Lerp(startPosition, targetPosition, consumeTime / Timerag);
             consumeTime += Time.deltaTime;
+            _rigidbody.MovePosition(Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp01(consumeTime / Timerag)));
             yield return null; // 次のフレームまで待機
         }
-        transform.position = targetPosition;
+        _rigidbody.MovePosition(targetPosition);
 
         isMoving = false;  // 移動完了
     }

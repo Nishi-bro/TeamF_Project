@@ -144,19 +144,19 @@ public class BallMove : MonoBehaviour
         if (_xBarrier != false)
         {
             GameObject _xstreetBarrier = Rock;
-            Vector3 spawnPosition = new Vector3(-3, 2, nextSpawnZ + 60); // 生成位置を設定
+            Vector3 spawnPosition = new Vector3(-3, 2, nextSpawnZ + 120); // 生成位置を設定
             Instantiate(_xstreetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
         }
         if (Barrier != false)
         {
             GameObject streetBarrier = Rock;
-            Vector3 spawnPosition = new Vector3(0, 2, nextSpawnZ + 60);
+            Vector3 spawnPosition = new Vector3(0, 2, nextSpawnZ + 120);
             Instantiate(streetBarrier, spawnPosition, Quaternion.identity); // 座標違うが同上
         }
         if (xBarrier != false)
         {
             GameObject xstreetBarrier = Rock;
-            Vector3 spawnPosition = new Vector3(3, 2, nextSpawnZ + 60);
+            Vector3 spawnPosition = new Vector3(3, 2, nextSpawnZ + 120);
             Instantiate(xstreetBarrier, spawnPosition, Quaternion.identity);  // 座標違うが同上
         }
     }

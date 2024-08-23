@@ -8,7 +8,7 @@ public class AutoRun : MonoBehaviour
     void Start()
     {
         // アニメーションの再生
-        animator.Play("Run"); // "Run"はアニメーションクリップの名前です。
+        animator.Play("FastRun1", 0); // "Run"はアニメーションクリップの名前です。
     }
 
     void Update()

@@ -89,6 +89,7 @@ public class BallMove : MonoBehaviour
         isMoving = true;  // 移動中フラグをオン
         Vector3 startPosition = transform.position;
         Vector3 targetPosition = startPosition + direction * 3;//横に3移動
+        targetPosition.z += 3;
 
         float consumeTime = 0f;
         //移動中はどのキーも干渉しないように

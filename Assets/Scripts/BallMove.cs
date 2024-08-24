@@ -18,7 +18,13 @@ public class BallMove : MonoBehaviour
     private int nextSpawnZ = 30; // 次に生成するZ位置の初期値
     System.Random random_man = new System.Random(); //障害物のランダム生成に使う
 
-    
+    public Image speechBubble;  // 吹き出しのImageコンポーネント(hukidasi)
+    public Sprite damageSprite; // 吹き出しで表示するスプライト(hukidasi)
+    public Image speechBubble2;  // 吹き出しのImageコンポーネント(heart)
+    public Sprite damageSprite2; // 吹き出しで表示するスプライト (heart)
+    private bool isDisplaying = false; // 吹き出しが表示中かどうかのフラグ
+
+
     [SerializeField]
     private Slider hpSlider;
     private float hpmanage = 100;//HP管理に使う
@@ -36,7 +42,12 @@ public class BallMove : MonoBehaviour
         StartCoroutine(DecreaseScore());
         // 時間制限処理
         TimeText.text = "Time: " + RimitTime.ToString();
+
+        // 吹き出しを非表示にする
+        speechBubble.enabled = false;
+        speechBubble2.enabled = false;
     }
+
 
     private void Update()
     {
@@ -179,6 +190,14 @@ public class BallMove : MonoBehaviour
 
             // UI の表示を更新します
             SetCountText();
+
+            // "Rock"タグのオブジェクトに衝突した場合
+            
+            
+            if (!isDisplaying)
+            {
+                StartCoroutine(ShowSpeechBubble());
+            }
         }
         // ぶつかったオブジェクトが車だった場合　即ゲームオーバー
         if (other.gameObject.CompareTag("Cars"))
@@ -191,6 +210,27 @@ public class BallMove : MonoBehaviour
             SceneManager.LoadScene("ClearScene");
         }
     }
+    private IEnumerator ShowSpeechBubble()
+    {
+        isDisplaying = true;
+
+        // 吹き出しのスプライトを変更して表示
+        speechBubble.sprite = damageSprite;
+        speechBubble.enabled = true;
+        speechBubble2.sprite = damageSprite2;
+        speechBubble2.enabled = true;
+
+        // 5秒間表示
+        yield return new WaitForSeconds(3.0f);
+
+        // 吹き出しを非表示にする
+        speechBubble.enabled = false;
+        speechBubble2.enabled = false;
+        isDisplaying = false;
+
+    }
+
+
     void SetCountText()
     {
         if (TimeText != null)

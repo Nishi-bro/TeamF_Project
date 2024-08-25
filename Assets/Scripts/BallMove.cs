@@ -7,7 +7,8 @@ public class BallMove : MonoBehaviour
 {
     private int ManageTransform = 0;
     private bool isMoving = false;
-    public float Timerag = 0.2f; // 移動にかかる時間の関数 
+    public float Timerag = 0.2f; // 移動にかかる時間の関数
+    private bool slipTriger = false;
 
     public float RimitTime = 180;
     public Text TimeText;//時間管理に使う関数
@@ -24,6 +25,10 @@ public class BallMove : MonoBehaviour
     public Sprite damageSprite2; // 吹き出しで表示するスプライト (heart)
     private bool isDisplaying = false; // 吹き出しが表示中かどうかのフラグ
 
+    public Animator animator;      // アニメーションのAnimatorコンポーネント
+
+    public string fallAnimation = "Fall";   // 転倒するアニメーションの名前
+    public string getUpAnimation = "GetUp"; // 起き上がるアニメーションの名前
 
     [SerializeField]
     private Slider hpSlider;
@@ -37,6 +42,8 @@ public class BallMove : MonoBehaviour
 
     private void Start()
     {
+        animator.Play("FastRun1", 0); // "Run"はアニメーションクリップの名前です。
+
         _rigidbody = GetComponent<Rigidbody>();
 
         StartCoroutine(DecreaseScore());
@@ -51,7 +58,7 @@ public class BallMove : MonoBehaviour
 
     private void Update()
     {
-        if(!isMoving)
+        if(!isMoving && !slipTriger)
         {
             // 左キーを押した時の動き
             if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1)
@@ -67,7 +74,10 @@ public class BallMove : MonoBehaviour
                 ManageTransform += 1;
             }
         }
-        MoveForward();
+        if (!slipTriger)
+        {
+            MoveForward();
+        }
         // RUN処理 横移動処理と分けてます
 
         if (transform.position.z >= nextSpawnZ )
@@ -191,13 +201,14 @@ public class BallMove : MonoBehaviour
             // UI の表示を更新します
             SetCountText();
 
+            animator.Play("Fall");
+
             // "Rock"タグのオブジェクトに衝突した場合
+            slipTriger = true;
+
+
+            StartCoroutine(PlayAnimations());
             
-            
-            if (!isDisplaying)
-            {
-                StartCoroutine(ShowSpeechBubble());
-            }
         }
         // ぶつかったオブジェクトが車だった場合　即ゲームオーバー
         if (other.gameObject.CompareTag("Cars"))
@@ -210,8 +221,28 @@ public class BallMove : MonoBehaviour
             SceneManager.LoadScene("ClearScene");
         }
     }
+
+    private IEnumerator PlayAnimations()
+    {
+        // 転倒アニメーションの終了を待つ
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
+
+        // 起き上がりアニメーションを再生
+        animator.SetTrigger("GetUp");
+
+        // 吹き出しが表示中でない場合に表示する
+        if (!isDisplaying)
+        {
+            StartCoroutine(ShowSpeechBubble());
+        }
+    }
+
+
+
+
     private IEnumerator ShowSpeechBubble()
     {
+
         isDisplaying = true;
 
         // 吹き出しのスプライトを変更して表示
@@ -220,13 +251,18 @@ public class BallMove : MonoBehaviour
         speechBubble2.sprite = damageSprite2;
         speechBubble2.enabled = true;
 
+
+
+
         // 5秒間表示
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(4.0f);
 
         // 吹き出しを非表示にする
+
         speechBubble.enabled = false;
         speechBubble2.enabled = false;
         isDisplaying = false;
+        slipTriger = false;
 
     }
 

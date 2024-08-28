@@ -109,8 +109,15 @@ public class BallMove : MonoBehaviour
     {
         isMoving = true;  // 移動中フラグをオン
         Vector3 startPosition = transform.position;
-        Vector3 targetPosition = startPosition + direction * 3;//横に3移動
-        targetPosition.z += 3;
+        // 現在の方向に基づいて、3ユニット進行方向に移動
+        Vector3 lateralMove = direction.normalized * 3;  // 進行方向に3ユニット移動
+
+        // 現在の進行方向に対して垂直な方向に3ユニット移動するためのベクトルを計算
+        Vector3 perpendicularMove = Vector3.Cross(direction.normalized, Vector3.up).normalized * 3;
+
+        // targetPositionを45度斜め前に移動させる
+        Vector3 targetPosition = startPosition + lateralMove + perpendicularMove;
+
 
         float consumeTime = 0f;
         //移動中はどのキーも干渉しないように

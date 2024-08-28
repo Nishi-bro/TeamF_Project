@@ -1,18 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Managesmapho : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public GameObject DefaultMonitor; // Canvasオブジェクトを割り当てる
+    public GameObject CookMonitor; // Canvasオブジェクトを割り当てる
+
     void Start()
     {
-        
+        // 5秒後にShowCanvasメソッドを実行
+        Invoke("viewMonitor", 5f);
     }
 
-    // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+
+            // 5秒後にShowCanvasメソッドを実行
+            Invoke("ExtraMonitor", 0f);
+
+        }
         
     }
+    void viewMonitor()
+    {
+        // Canvasを表示
+        DefaultMonitor.gameObject.SetActive(true);
+    }
+    void ExtraMonitor()
+    {
+        CookMonitor.gameObject.SetActive(true);
+    }
 }
+ 

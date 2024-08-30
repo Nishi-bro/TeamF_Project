@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Managesmapho : MonoBehaviour
+public class ManageSmapho : MonoBehaviour
 {
     public GameObject DefaultMonitor; // Canvasオブジェクトを割り当てる
     public GameObject CookMonitor; // Canvasオブジェクトを割り当てる
@@ -15,21 +15,26 @@ public class Managesmapho : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-
-            // 5秒後にShowCanvasメソッドを実行
+            // 即時にExtraMonitorメソッドを実行
             Invoke("ExtraMonitor", 0f);
-
         }
-        
     }
+
     void viewMonitor()
     {
-        // Canvasを表示
-        DefaultMonitor.gameObject.SetActive(true);
+        // DefaultMonitor Canvasを表示
+        if (DefaultMonitor != null)
+        {
+            DefaultMonitor.SetActive(true);
+        }
     }
+
     void ExtraMonitor()
     {
-        CookMonitor.gameObject.SetActive(true);
+        // CookMonitor Canvasを表示
+        if (CookMonitor != null)
+        {
+            CookMonitor.SetActive(true);
+        }
     }
 }
- 

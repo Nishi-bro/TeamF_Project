@@ -11,7 +11,7 @@ public class SatisfyManager : MonoBehaviour
         public Button RightButton; // 右のボタン
         public Text satisfactionText; // 満足度を表示するテキスト
         public int satisfaction; // 現在の満足度
-        public string monitorName; // モニター名（例：CookMonitor)
+        public string monitorName; // モニター名（例：CookMonitor）
     }
 
     public PanelSetup[] panelSetups;
@@ -22,23 +22,63 @@ public class SatisfyManager : MonoBehaviour
         {
             if (setup.LeftButton != null)
             {
-                setup.LeftButton.onClick.AddListener(OnLeftButtonPressed);
+                // 引数なしで呼び出せるメソッドを設定
+                setup.LeftButton.onClick.AddListener(() => OnLeftButtonPressed());
             }
             else
             {
-                Debug.LogWarning("LeftButton is not assigned for " + setup.monitorName);
+                Debug.LogWarning("LeftButton is not assigned in PanelSetup.");
             }
 
             if (setup.RightButton != null)
             {
-                setup.RightButton.onClick.AddListener(OnRightButtonPressed);
+                // 引数なしで呼び出せるメソッドを設定
+                setup.RightButton.onClick.AddListener(() => OnRightButtonPressed());
             }
             else
             {
-                Debug.LogWarning("RightButton is not assigned for " + setup.monitorName);
+                Debug.LogWarning("RightButton is not assigned in PanelSetup.");
             }
+        }
+    }
 
-            setup.panel.SetActive(false); // 初期状態では非表示
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            foreach (PanelSetup setup in panelSetups)
+            {
+                if (setup.panel.activeSelf) // アクティブなパネルがある場合
+                {
+                    OnLeftButtonPressed(); // 左ボタンのクリックイベントを手動でトリガー
+                    break; // 一つのパネルのみ処理する
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            foreach (PanelSetup setup in panelSetups)
+            {
+                if (setup.panel.activeSelf) // アクティブなパネルがある場合
+                {
+                    OnRightButtonPressed(); // 右ボタンのクリックイベントを手動でトリガー
+                    break; // 一つのパネルのみ処理する
+                }
+            }
+        }
+    }
+
+    void OnRightButtonPressed()
+    {
+        // アクティブなパネルを取得し、処理を実行
+        foreach (PanelSetup setup in panelSetups)
+        {
+            if (setup.panel.activeSelf) // パネルが表示されている時のみ処理
+            {
+                setup.panel.SetActive(false);
+                break; // 処理は1つのパネルに対してのみ実行
+            }
         }
     }
 
@@ -46,27 +86,14 @@ public class SatisfyManager : MonoBehaviour
     {
         foreach (PanelSetup setup in panelSetups)
         {
-            if (setup.panel.activeSelf) // パネルが表示されている時のみ処理
+            if (setup.monitorName == "CookMonitor")
             {
-                Debug.Log("Left Button Pressed on Panel: " + setup.monitorName);
-                if (setup.monitorName == "CookMonitor")
-                {
-                    IncreaseSatisfaction(setup);
-                }
-                setup.panel.SetActive(false);
-                break; // 一つのパネルのみ処理する
+                IncreaseSatisfaction(setup); // 満足度を上昇させる処理
             }
-        }
-    }
 
-    void OnRightButtonPressed()
-    {
-        foreach (PanelSetup setup in panelSetups)
-        {
-            if (setup.panel.activeSelf) // パネルが表示されている時のみ処理
+            if (setup.panel.activeSelf) // パネルが表示されている時のみ消す処理
             {
-                Debug.Log("Right Button Pressed on Panel: " + setup.monitorName);
-                setup.panel.SetActive(false);
+                setup.panel.SetActive(false); // パネルを消す処理
                 break; // 一つのパネルのみ処理する
             }
         }
@@ -74,12 +101,12 @@ public class SatisfyManager : MonoBehaviour
 
     void IncreaseSatisfaction(PanelSetup setup)
     {
-        if (setup.panel.activeSelf) // パネルが表示されている時のみ処理
+        if (setup.panel.activeSelf) // パネルが表示されている時のみ処理する
         {
-            // 満足度を15%増加
             setup.satisfaction += 15;
-            setup.satisfaction = Mathf.Clamp(setup.satisfaction, 0, 100); // 0から100の範囲に制限
-            setup.satisfactionText.text = setup.satisfaction.ToString() + "%";
-        }
+            setup.satisfaction = Mathf.Clamp(setup.satisfaction, 0, 100);
+            setup.satisfactionText.text = setup.satisfaction.ToString() + "%";        }
     }
+
+
 }

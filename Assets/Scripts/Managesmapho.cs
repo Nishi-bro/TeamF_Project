@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class Managesmapho : MonoBehaviour
+public class ManageSmapho : MonoBehaviour
 {
-    public GameObject DefaultMonitor; // Canvasオブジェクトを割り当てる
-    public GameObject CookMonitor; // Canvasオブジェクトを割り当てる
+    public GameObject DefaultMonitor; // Canvasオブジェクト（彼女からの通信）
+    public GameObject CookMonitor; // Canvasオブジェクト
 
     void Start()
     {
-        // 5秒後にShowCanvasメソッドを実行
+        // 5秒後にviewMonitorメソッドを実行
         Invoke("viewMonitor", 5f);
     }
 
@@ -15,21 +15,39 @@ public class Managesmapho : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
-
-            // 5秒後にShowCanvasメソッドを実行
-            Invoke("ExtraMonitor", 0f);
-
+            // DefaultMonitorが表示されている場合にのみExtraMonitorメソッドを実行
+            if (DefaultMonitor != null && DefaultMonitor.activeSelf)
+            {
+                // 即時にExtraMonitorメソッドを実行
+                Invoke("ExtraMonitor", 0f);
+                Invoke("HideDefaultMonitor", 0.1f);
+            }
         }
-        
     }
+
     void viewMonitor()
     {
-        // Canvasを表示
-        DefaultMonitor.gameObject.SetActive(true);
+        // DefaultMonitor Canvasを表示
+        if (DefaultMonitor != null)
+        {
+            DefaultMonitor.SetActive(true);
+        }
     }
+    void HideDefaultMonitor()
+    {
+        // DefaultMonitorを非表示にする
+        if (DefaultMonitor != null)
+        {
+            DefaultMonitor.SetActive(false);
+        }
+    }
+
     void ExtraMonitor()
     {
-        CookMonitor.gameObject.SetActive(true);
+        // CookMonitor Canvasを表示
+        if (CookMonitor != null)
+        {
+            CookMonitor.SetActive(true);
+        }
     }
 }
- 

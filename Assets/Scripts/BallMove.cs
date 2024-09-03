@@ -10,6 +10,8 @@ public class BallMove : MonoBehaviour
     public float Timerag = 0.2f; // 移動にかかる時間の関数
     private bool slipTriger = false;
 
+    private bool isLeft = false;
+
     public float RimitTime = 180;
     public Text TimeText;//時間管理に使う関数
 
@@ -63,6 +65,7 @@ public class BallMove : MonoBehaviour
             // 左キーを押した時の動き
             if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1)
             {
+                
                 StartCoroutine(MovePlayer(-transform.right)); // 左に動くコルーチンを開始
                 ManageTransform -= 1;
             }
@@ -87,6 +90,7 @@ public class BallMove : MonoBehaviour
         }
         if(hpmanage <= 0)
         {
+            
             //hp0でシーン遷移
             SceneManager.LoadScene("GameOverscene");
         }
@@ -109,8 +113,15 @@ public class BallMove : MonoBehaviour
     {
         isMoving = true;  // 移動中フラグをオン
         Vector3 startPosition = transform.position;
-        Vector3 targetPosition = startPosition + direction * 3;//横に3移動
-        targetPosition.z += 3;
+
+        // 進行方向に3ユニット移動
+        Vector3 lateralMove = direction.normalized * 3;  // 横方向に3ユニット移動
+
+        // 現在向いている方向に基づいて、前方に3ユニット移動を追加
+        Vector3 forwardMove = transform.forward.normalized * 3;  // 前方に3ユニット移動
+
+        // targetPositionを斜め前方に移動させる
+        Vector3 targetPosition = startPosition + lateralMove + forwardMove;
 
         float consumeTime = 0f;
         //移動中はどのキーも干渉しないように
@@ -124,6 +135,9 @@ public class BallMove : MonoBehaviour
 
         isMoving = false;  // 移動完了
     }
+
+
+
 
 
 

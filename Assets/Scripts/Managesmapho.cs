@@ -49,5 +49,6 @@ public class ManageSmapho : MonoBehaviour
         {
             CookMonitor.SetActive(true);
         }
+        Invoke("viewMonitor", 5f);
     }
 }

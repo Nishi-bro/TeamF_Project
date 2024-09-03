@@ -12319,12 +12319,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7fa3c85066a042a794b49036c017b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  satisfaction: 35
   panelSetups:
   - panel: {fileID: 93626619}
     LeftButton: {fileID: 1313061192}
     RightButton: {fileID: 371418901}
     satisfactionText: {fileID: 1691408482}
-    satisfaction: 0
     monitorName: CookMonitor
 --- !u!4 &845077635
 Transform:

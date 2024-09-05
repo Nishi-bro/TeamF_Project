@@ -11,15 +11,14 @@ public class SatisfyManager : MonoBehaviour
         public Button LeftButton; // 左のボタン
         public Button RightButton; // 右のボタン
         public Text satisfactionText; // 満足度を表示するテキスト
-
         public string monitorName; // モニター名（例：CookMonitor）
     }
+
     public int satisfaction = 25; // 現在の満足度
     public PanelSetup[] panelSetups;
 
     private void Start()
     {
-
         foreach (PanelSetup setup in panelSetups)
         {
             if (setup.LeftButton != null)
@@ -39,7 +38,6 @@ public class SatisfyManager : MonoBehaviour
             {
                 Debug.LogWarning("RightButton is not assigned in PanelSetup.");
             }
-
         }
 
         // 3秒ごとに満足度を更新するコルーチンを開始
@@ -73,10 +71,7 @@ public class SatisfyManager : MonoBehaviour
         }
     }
 
-
-
-
-    private void OnRightButtonPressed(PanelSetup setup)//E button
+    private void OnRightButtonPressed(PanelSetup setup) // Eボタン
     {
         if (setup.monitorName == "CookMonitor" || setup.monitorName == "GohanMonitor")
         {
@@ -86,14 +81,14 @@ public class SatisfyManager : MonoBehaviour
         {
             DecreaseSatisfaction(setup);
         }
+
         if (setup.panel.activeSelf) // パネルが表示されている時のみ処理
         {
             setup.panel.SetActive(false);
         }
-
     }
 
-    private void OnLeftButtonPressed(PanelSetup setup)// Q button
+    private void OnLeftButtonPressed(PanelSetup setup) // Qボタン
     {
         if (setup.monitorName == "NebouMonitor")
         {
@@ -114,7 +109,6 @@ public class SatisfyManager : MonoBehaviour
     {
         satisfaction += 15;
         satisfaction = Mathf.Clamp(satisfaction, 0, 100);
-        // 満足度の更新があった場合、表示も更新する
         setup.satisfactionText.text = "彼女満足度:" + satisfaction.ToString() + "%";
         UpdateColor(setup);
     }
@@ -126,8 +120,7 @@ public class SatisfyManager : MonoBehaviour
             satisfaction -= 1;
             foreach (PanelSetup setup in panelSetups)
             {
-
-                satisfaction = Mathf.Clamp(satisfaction, 0, 100); // 満足度の範囲を制限
+                satisfaction = Mathf.Clamp(satisfaction, 0, 100);
                 setup.satisfactionText.text = "彼女満足度:" + satisfaction.ToString() + "%";
                 UpdateColor(setup);
             }
@@ -139,42 +132,36 @@ public class SatisfyManager : MonoBehaviour
     {
         satisfaction -= 5;
         satisfaction = Mathf.Clamp(satisfaction, 0, 100);
-        // 満足度の更新があった場合、表示も更新する
         setup.satisfactionText.text = "彼女満足度:" + satisfaction.ToString() + "%";
         UpdateColor(setup);
     }
 
-    public void IgnoreSatisfaction(PanelSetup setup) //Managesmaphoより呼び出し
+    public void IgnoreSatisfactionOnDefaultMonitor()
     {
         satisfaction -= 10;
         satisfaction = Mathf.Clamp(satisfaction, 0, 100);
-        // 満足度の更新があった場合、表示も更新する
-        setup.satisfactionText.text = "彼女満足度:" + satisfaction.ToString() + "%";
-        UpdateColor(setup);
+
+        // すべてのパネルセットアップのテキストを更新
+        foreach (PanelSetup setup in panelSetups)
+        {
+            setup.satisfactionText.text = "彼女満足度:" + satisfaction.ToString() + "%";
+            UpdateColor(setup);
+        }
     }
 
-    void UpdateColor(PanelSetup setup) // 満足度で色を変える
+    void UpdateColor(PanelSetup setup)
     {
         if (satisfaction >= 70)
         {
-            float r = 255f / 255f;
-            float g = 0f / 255f;
-            float b = 0f / 255f;//RGB(255, 0, 0)
-            setup.satisfactionText.color = new Color(r, g, b);
+            setup.satisfactionText.color = new Color(1f, 0f, 0f); // 赤色
         }
         else if (satisfaction >= 50)
         {
-            float r = 200f / 255f;
-            float g = 0f / 255f;
-            float b = 150f / 255f;//RGB(255, 0, 0)
-            setup.satisfactionText.color = new Color(r, g, b);
+            setup.satisfactionText.color = new Color(0.78f, 0f, 0.59f); // ピンク色
         }
         else
         {
-            float r = 0f;
-            float g = 0f;
-            float b = 1f;//RGB(255, 0, 0)
-            setup.satisfactionText.color = new Color(r, g, b);
+            setup.satisfactionText.color = new Color(0f, 0f, 1f); // 青色
         }
     }
 }

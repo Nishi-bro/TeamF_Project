@@ -7799,13 +7799,13 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 54294285fc4662045a1da5ab624956e0, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.202
   m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 89
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -19249,6 +19249,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DefaultMonitor: {fileID: 218737506}
   CookMonitor: {fileID: 93626619}
+  satisfyManager: {fileID: 845077634}
 --- !u!1001 &1771777960
 PrefabInstance:
   m_ObjectHideFlags: 0

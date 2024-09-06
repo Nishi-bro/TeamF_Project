@@ -70,6 +70,23 @@ public class SatisfyManager : MonoBehaviour
             }
         }
     }
+    private void OnLeftButtonPressed(PanelSetup setup) // Qボタン
+    {
+        if (setup.monitorName == "NebouMonitor" || setup.monitorName == "KakuninMonitor")
+        {
+            IncreaseSatisfaction(setup); // 満足度を上昇させる処理
+        }
+        else
+        {
+            DecreaseSatisfaction(setup);
+        }
+
+        if (setup.panel.activeSelf) // パネルが表示されている時のみ処理
+        {
+            setup.panel.SetActive(false);
+        }
+    }
+
 
     private void OnRightButtonPressed(PanelSetup setup) // Eボタン
     {
@@ -88,23 +105,7 @@ public class SatisfyManager : MonoBehaviour
         }
     }
 
-    private void OnLeftButtonPressed(PanelSetup setup) // Qボタン
-    {
-        if (setup.monitorName == "NebouMonitor")
-        {
-            IncreaseSatisfaction(setup); // 満足度を上昇させる処理
-        }
-        else
-        {
-            DecreaseSatisfaction(setup);
-        }
-
-        if (setup.panel.activeSelf) // パネルが表示されている時のみ処理
-        {
-            setup.panel.SetActive(false);
-        }
-    }
-
+    
     private void IncreaseSatisfaction(PanelSetup setup)
     {
         satisfaction += 15;

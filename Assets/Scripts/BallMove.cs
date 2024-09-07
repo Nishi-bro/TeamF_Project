@@ -11,45 +11,48 @@ public class BallMove : MonoBehaviour
     private bool slipTriger = false;
 
     private bool isLeft = false;
+    private bool hasChangedDirection = false; // Z座標が420に達したかどうかを記録するフラグ
 
     public float RimitTime = 180;
-    public Text TimeText;//時間管理に使う関数
+    public Text TimeText; // 時間管理に使う関数
 
-    public GameObject Rock; //　岩のプレハブ
+    public GameObject Rock; // 岩のプレハブ
     public GameObject Heart; // ハートのプレハブ
     private bool _xBarrier, Barrier, xBarrier;
     private int nextSpawnZ = 30; // 次に生成するZ位置の初期値
-    System.Random random_man = new System.Random(); //障害物のランダム生成に使う
+    System.Random random_man = new System.Random(); // 障害物のランダム生成に使う
 
-    public Image speechBubble;  // 吹き出しのImageコンポーネント(hukidasi)
-    public Sprite damageSprite; // 吹き出しで表示するスプライト(hukidasi)
-    public Image speechBubble2;  // 吹き出しのImageコンポーネント(heart)
-    public Sprite damageSprite2; // 吹き出しで表示するスプライト (heart)
+    public Image speechBubble; // 吹き出しのImageコンポーネント
+    public Sprite damageSprite; // 吹き出しで表示するスプライト
+    public Image speechBubble2; // 吹き出しのImageコンポーネント
+    public Sprite damageSprite2; // 吹き出しで表示するスプライト
     private bool isDisplaying = false; // 吹き出しが表示中かどうかのフラグ
 
-    public Animator animator;      // アニメーションのAnimatorコンポーネント
+    public Animator animator; // アニメーションのAnimatorコンポーネント
 
-    public string fallAnimation = "Fall";   // 転倒するアニメーションの名前
+    public string fallAnimation = "Fall"; // 転倒するアニメーションの名前
     public string getUpAnimation = "GetUp"; // 起き上がるアニメーションの名前
 
     [SerializeField]
     private Slider hpSlider;
-    private float hpmanage = 100;//HP管理に使う
-
+    private float hpmanage = 100; // HP管理に使う
 
     [SerializeField]
-    private float _runspeed = 10f;  // RUNの速さ（
+    private float _runspeed = 10f; // RUNの速さ
 
-    private Rigidbody _rigidbody;// 物理判定に使う
+    private Rigidbody _rigidbody; // 物理判定に使う
+
+    private Vector3 moveDirection = Vector3.forward; // デフォルトの進行方向
 
     private void Start()
     {
-        animator.Play("FastRun1", 0); // "Run"はアニメーションクリップの名前です。
+
+        animator.Play("FastRun1", 0); // アニメーションクリップの名前
 
         _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody.constraints = RigidbodyConstraints.FreezePositionY; // Y軸方向の移動を固定
 
         StartCoroutine(DecreaseScore());
-        // 時間制限処理
         TimeText.text = "Time: " + RimitTime.ToString();
 
         // 吹き出しを非表示にする
@@ -57,179 +60,170 @@ public class BallMove : MonoBehaviour
         speechBubble2.enabled = false;
     }
 
-
     private void Update()
     {
-        if(!isMoving && !slipTriger)
+        // Y座標を固定する
+        Vector3 position = transform.position;
+        position.y = 1f;
+        transform.position = position;
+        if (transform.position.z >= 420f && !hasChangedDirection)
         {
-            // 左キーを押した時の動き
+            hasChangedDirection = true;
+            // 進行方向をX軸に変更
+            moveDirection = Vector3.right;
+            // 右方向に回転させる
+            transform.rotation = Quaternion.Euler(0, 90, 0); // Y軸方向に90度回転
+        }
+
+        if (!isMoving && !slipTriger)
+        {
             if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1)
             {
-                
                 StartCoroutine(MovePlayer(-transform.right)); // 左に動くコルーチンを開始
                 ManageTransform -= 1;
             }
 
-            // 右キーを押した時の動き
             if (Input.GetKeyDown(KeyCode.D) && ManageTransform < 1)
             {
-                StartCoroutine(MovePlayer(transform.right)); // 左に動くコルーチンを開始
+                StartCoroutine(MovePlayer(transform.right)); // 右に動くコルーチンを開始
                 ManageTransform += 1;
             }
         }
+
         if (!slipTriger)
         {
             MoveForward();
         }
-        // RUN処理 横移動処理と分けてます
 
-        if (transform.position.z >= nextSpawnZ )
+        if (transform.position.z >= nextSpawnZ)
         {
             SpawnBarrier(); // 障害物を生成する処理
             nextSpawnZ += 20; // 次の生成位置を更新
         }
-        if(hpmanage <= 0)
+
+        if (hpmanage <= 0)
         {
-            
-            //hp0でシーン遷移
             SceneManager.LoadScene("GameOverscene");
         }
         if (RimitTime <= 0)
         {
-            //Time0でシーン遷移
             SceneManager.LoadScene("GameOverTime");
         }
+    }
+    private void LateUpdate()
+    {
+        // Y軸の回転のみを維持し、X軸とZ軸の回転をリセットする
+        transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
     }
 
     private void MoveForward()
     {
-        Vector3 forwardMovement = Vector3.forward * _runspeed * Time.deltaTime;
+        Vector3 forwardMovement = moveDirection * _runspeed * Time.deltaTime;
         _rigidbody.MovePosition(_rigidbody.position + forwardMovement);
-    }//RUNの処理
 
+        // 移動方向に応じた回転を行う
+        if (moveDirection == Vector3.right)
+        {
+            // X軸方向に移動中はX方向に向ける
+            transform.rotation = Quaternion.Euler(0, 90, 0);
+        }
+        else
+        {
+            // Z軸方向に移動中はZ方向に向ける
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        // Y座標を固定する
+        Vector3 position = transform.position;
+        position.y = 1f;
+        transform.position = position;
+    }
 
-    //コルーチン
     private IEnumerator MovePlayer(Vector3 direction)
     {
-        isMoving = true;  // 移動中フラグをオン
+        isMoving = true;
         Vector3 startPosition = transform.position;
 
-        // 進行方向に3ユニット移動
-        Vector3 lateralMove = direction.normalized * 3;  // 横方向に3ユニット移動
+        Vector3 lateralMove = direction.normalized * 3; // 横方向に3ユニット移動
+        Vector3 forwardMove = transform.forward.normalized * 3; // 前方に3ユニット移動
 
-        // 現在向いている方向に基づいて、前方に3ユニット移動を追加
-        Vector3 forwardMove = transform.forward.normalized * 3;  // 前方に3ユニット移動
-
-        // targetPositionを斜め前方に移動させる
         Vector3 targetPosition = startPosition + lateralMove + forwardMove;
 
         float consumeTime = 0f;
-        //移動中はどのキーも干渉しないように
         while (consumeTime < Timerag)
         {
             consumeTime += Time.deltaTime;
             _rigidbody.MovePosition(Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp01(consumeTime / Timerag)));
-            yield return null; // 次のフレームまで待機
+            yield return null;
         }
         _rigidbody.MovePosition(targetPosition);
 
-        isMoving = false;  // 移動完了
+        isMoving = false;
     }
-
-
-
-
-
 
     private IEnumerator DecreaseScore()
     {
-        while (RimitTime > 0)  // 時間が0より大きい間
+        while (RimitTime > 0)
         {
-            RimitTime--;  // スコアを1減らす
-            SetCountText();  
-            yield return new WaitForSeconds(1f);  // 1秒待つ
-            //＝1秒ごとにスコアを1減らす
+            RimitTime--;
+            SetCountText();
+            yield return new WaitForSeconds(1f);
         }
     }
 
-
-
-    // 以下西田担当、障害物の自動生成,判定部
     void SpawnBarrier()
     {
-        // ランダム障害物生成のコード、60％の確率で各レーンに障害物生成 
-        _xBarrier = Random.value < 0.6f ? true : false;// x=-3に障害物生成
-        Barrier = Random.value < 0.6f ? true : false;  // x=0 に障害物生成
-        xBarrier = Random.value < 0.6f ? true : false; // x=3 に障害物生成
-        
-        // 全てのレーンに障害物が生成された場合
-        if (_xBarrier == true && Barrier == true && xBarrier == true)
+        _xBarrier = Random.value < 0.6f;
+        Barrier = Random.value < 0.6f;
+        xBarrier = Random.value < 0.6f;
+
+        if (_xBarrier && Barrier && xBarrier)
         {
-            int? except;
-            except = random_man.Next(1, 3);//1-3 までを抽選する
+            int? except = random_man.Next(1, 3);
             if (except == 1)
                 _xBarrier = false;
             else if (except == 2)
                 Barrier = false;
             else
                 xBarrier = false;
-            // 出た数字によってレーンの障害物生成を中止
         }
 
-        // 新しい障害物を 生成
-        if (_xBarrier != false)
+        if (_xBarrier)
         {
-            GameObject _xstreetBarrier = Rock;
-            Vector3 spawnPosition = new Vector3(-3, 0, nextSpawnZ + 120); // 生成位置を設定
-            Instantiate(_xstreetBarrier, spawnPosition, Quaternion.identity); // プレハブを生成
+            Instantiate(Rock, new Vector3(-3, 0, nextSpawnZ + 120), Quaternion.identity);
         }
-        if (Barrier != false)
+        if (Barrier)
         {
-            GameObject streetBarrier = Rock;
-            Vector3 spawnPosition = new Vector3(0, 0, nextSpawnZ + 120);
-            Instantiate(streetBarrier, spawnPosition, Quaternion.identity); // 座標違うが同上
+            Instantiate(Rock, new Vector3(0, 0, nextSpawnZ + 120), Quaternion.identity);
         }
-        if (xBarrier != false)
+        if (xBarrier)
         {
-            GameObject xstreetBarrier = Rock;
-            Vector3 spawnPosition = new Vector3(3, 0, nextSpawnZ + 120);
-            Instantiate(xstreetBarrier, spawnPosition, Quaternion.identity);  // 座標違うが同上
+            Instantiate(Rock, new Vector3(3, 0, nextSpawnZ + 120), Quaternion.identity);
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        // ぶつかったオブジェクトが岩だった場合
         if (other.gameObject.CompareTag("Rock"))
         {
-            // 岩を非表示にします（しなくてもいいかも）
             other.gameObject.SetActive(false);
 
-            // 時間減らします
-            RimitTime = RimitTime - 5;
-
-            // ハート1個減らします
+            RimitTime -= 5;
             hpSlider.value -= 20;
             hpmanage -= 20;
 
-            // UI の表示を更新します
             SetCountText();
 
             animator.Play("Fall");
+            animator.speed = 1.5f;
 
-            // "Rock"タグのオブジェクトに衝突した場合
             slipTriger = true;
 
-
             StartCoroutine(PlayAnimations());
-            
         }
-        // ぶつかったオブジェクトが車だった場合　即ゲームオーバー
         if (other.gameObject.CompareTag("Cars"))
         {
             SceneManager.LoadScene("GameOverCar");
         }
-        //ぶつかったオブジェクトがゴールだった場合　Clear画面の表示
         if (other.gameObject.CompareTag("Finish"))
         {
             SceneManager.LoadScene("ClearScene");
@@ -238,54 +232,39 @@ public class BallMove : MonoBehaviour
 
     private IEnumerator PlayAnimations()
     {
-        // 転倒アニメーションの終了を待つ
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
-
-        // 起き上がりアニメーションを再生
         animator.SetTrigger("GetUp");
+        animator.speed = 1.0f;
 
-        // 吹き出しが表示中でない場合に表示する
         if (!isDisplaying)
         {
             StartCoroutine(ShowSpeechBubble());
         }
     }
 
-
-
-
     private IEnumerator ShowSpeechBubble()
     {
-
         isDisplaying = true;
 
-        // 吹き出しのスプライトを変更して表示
         speechBubble.sprite = damageSprite;
         speechBubble.enabled = true;
         speechBubble2.sprite = damageSprite2;
         speechBubble2.enabled = true;
 
-
-
-
-        // 5秒間表示
-        yield return new WaitForSeconds(4.0f);
-
-        // 吹き出しを非表示にする
+        yield return new WaitForSeconds(3.6f);
 
         speechBubble.enabled = false;
         speechBubble2.enabled = false;
         isDisplaying = false;
         slipTriger = false;
-
+        animator.speed = 1.0f;
     }
-
 
     void SetCountText()
     {
         if (TimeText != null)
         {
-            TimeText.text = "Time: " + RimitTime.ToString();//右下の時間テキストの更新
+            TimeText.text = "Time: " + RimitTime.ToString();
         }
     }
 }

@@ -11673,9 +11673,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timerag: 0.2
+  ChangeRotation1: 420
   RimitTime: 100
   TimeText: {fileID: 502698105}
   Rock: {fileID: 7595210750194216649, guid: c4e256e20aa664bae86873b5b9682ea2, type: 3}
+  Rock90: {fileID: 4622979633813124208, guid: 29ad6bae3ea774ec9b9f8e5c7d815523, type: 3}
   Heart: {fileID: 8791354712412432934, guid: dba506063e54840c2b3c18ca9009ff6c, type: 3}
   speechBubble: {fileID: 835025050}
   damageSprite: {fileID: 21300000, guid: c58762367e9c84ab5a879341f6fd2fd2, type: 3}
@@ -16258,7 +16260,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1354894556}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 997696cb21d36534095c4b6f7852ebfd, type: 3}
+  m_Avatar: {fileID: 9000000, guid: af2166692e99625489131a7bf2114bd6, type: 3}
   m_Controller: {fileID: 9100000, guid: 210c336a7c532c44f815acd659586c4d, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -19276,11 +19278,11 @@ RectTransform:
   - {fileID: 3025725670300623444}
   m_Father: {fileID: 759256435}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 50}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -30}
   m_SizeDelta: {x: 352, y: 70}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &1782849632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22812,7 +22814,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4343643393279826758, guid: 47297d6d238b543b98a05d175c3975eb, type: 3}
       propertyPath: m_Pivot.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4343643393279826758, guid: 47297d6d238b543b98a05d175c3975eb, type: 3}
       propertyPath: m_AnchorMax.x
@@ -22820,7 +22822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4343643393279826758, guid: 47297d6d238b543b98a05d175c3975eb, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4343643393279826758, guid: 47297d6d238b543b98a05d175c3975eb, type: 3}
       propertyPath: m_AnchorMin.x
@@ -22828,7 +22830,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4343643393279826758, guid: 47297d6d238b543b98a05d175c3975eb, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4343643393279826758, guid: 47297d6d238b543b98a05d175c3975eb, type: 3}
       propertyPath: m_SizeDelta.x
@@ -22927,6 +22929,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2973683446754454880, guid: c4e256e20aa664bae86873b5b9682ea2, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2973683446754454880, guid: c4e256e20aa664bae86873b5b9682ea2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3

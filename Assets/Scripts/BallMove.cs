@@ -199,15 +199,15 @@ public class BallMove : MonoBehaviour
         {
             if (LeftBarrier)
             {
-                Instantiate(Rock, new Vector3(-3, 0, nextSpawnZ + 120), Quaternion.identity);
+                Instantiate(Rock, new Vector3(-3.7f, 0, nextSpawnZ + 120), Quaternion.identity);
             }
             if (CenterBarrier)
             {
-                Instantiate(Rock, new Vector3(0, 0, nextSpawnZ + 120), Quaternion.identity);
+                Instantiate(Rock, new Vector3(-0.7f, 0, nextSpawnZ + 120), Quaternion.identity);
             }
             if (RightBarrier)
             {
-                Instantiate(Rock, new Vector3(3, 0, nextSpawnZ + 120), Quaternion.identity);
+                Instantiate(Rock, new Vector3(2.3f, 0, nextSpawnZ + 120), Quaternion.identity);
             }
         } else if (transform.position.x > 20)
         {
@@ -242,7 +242,7 @@ public class BallMove : MonoBehaviour
             animator.speed = 1.5f;
 
             slipTriger = true;
-            //_rigidbody.isKinematic = true;//物理法則を一旦切る
+            _rigidbody.isKinematic = true;//物理法則を一旦切る
             //StartCoroutine(BlinkDamagePanel((int)(damageAmount / 10)));
 
             StartCoroutine(PlayAnimations());

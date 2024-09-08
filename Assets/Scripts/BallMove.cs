@@ -10,16 +10,19 @@ public class BallMove : MonoBehaviour
     public float Timerag = 0.2f; // 移動にかかる時間の関数
     private bool slipTriger = false;
 
-    private bool isLeft = false;
+    public float ChangeRotation1 = 420f; //420fでx軸方向に回転
     private bool hasChangedDirection = false; // Z座標が420に達したかどうかを記録するフラグ
 
     public float RimitTime = 180;
     public Text TimeText; // 時間管理に使う関数
 
     public GameObject Rock; // 岩のプレハブ
+    public GameObject Rock90; // 90度回転した岩のプレハブ
+
     public GameObject Heart; // ハートのプレハブ
-    private bool _xBarrier, Barrier, xBarrier;
+    private bool LeftBarrier, CenterBarrier, RightBarrier;
     private int nextSpawnZ = 30; // 次に生成するZ位置の初期値
+    private int nextSpawnX = 20; // 次に生成するX位置の初期値
     System.Random random_man = new System.Random(); // 障害物のランダム生成に使う
 
     public Image speechBubble; // 吹き出しのImageコンポーネント
@@ -66,13 +69,14 @@ public class BallMove : MonoBehaviour
         Vector3 position = transform.position;
         position.y = 1f;
         transform.position = position;
-        if (transform.position.z >= 420f && !hasChangedDirection)
+        if (transform.position.z >= ChangeRotation1 && !hasChangedDirection)
         {
             hasChangedDirection = true;
             // 進行方向をX軸に変更
             moveDirection = Vector3.right;
             // 右方向に回転させる
             transform.rotation = Quaternion.Euler(0, 90, 0); // Y軸方向に90度回転
+            ManageTransform = 0;
         }
 
         if (!isMoving && !slipTriger)
@@ -99,6 +103,11 @@ public class BallMove : MonoBehaviour
         {
             SpawnBarrier(); // 障害物を生成する処理
             nextSpawnZ += 20; // 次の生成位置を更新
+        }
+        if (transform.position.x >= nextSpawnX)
+        {
+            SpawnBarrier(); // 障害物を生成する処理
+            nextSpawnX += 20;
         }
 
         if (hpmanage <= 0)
@@ -170,34 +179,50 @@ public class BallMove : MonoBehaviour
         }
     }
 
-    void SpawnBarrier()
+    void SpawnBarrier()　// 障害物の設定
     {
-        _xBarrier = Random.value < 0.6f;
-        Barrier = Random.value < 0.6f;
-        xBarrier = Random.value < 0.6f;
+        LeftBarrier = Random.value < 0.6f;
+        CenterBarrier = Random.value < 0.6f;
+        RightBarrier = Random.value < 0.6f;
 
-        if (_xBarrier && Barrier && xBarrier)
+        if (LeftBarrier && CenterBarrier && RightBarrier)
         {
             int? except = random_man.Next(1, 3);
             if (except == 1)
-                _xBarrier = false;
+                LeftBarrier = false;
             else if (except == 2)
-                Barrier = false;
+                CenterBarrier = false;
             else
-                xBarrier = false;
+                RightBarrier = false;
         }
-
-        if (_xBarrier)
+        if (ChangeRotation1 > transform.position.z + 120) //420までの障害物生成
         {
-            Instantiate(Rock, new Vector3(-3, 0, nextSpawnZ + 120), Quaternion.identity);
-        }
-        if (Barrier)
+            if (LeftBarrier)
+            {
+                Instantiate(Rock, new Vector3(-3, 0, nextSpawnZ + 120), Quaternion.identity);
+            }
+            if (CenterBarrier)
+            {
+                Instantiate(Rock, new Vector3(0, 0, nextSpawnZ + 120), Quaternion.identity);
+            }
+            if (RightBarrier)
+            {
+                Instantiate(Rock, new Vector3(3, 0, nextSpawnZ + 120), Quaternion.identity);
+            }
+        } else if (transform.position.x > 20)
         {
-            Instantiate(Rock, new Vector3(0, 0, nextSpawnZ + 120), Quaternion.identity);
-        }
-        if (xBarrier)
-        {
-            Instantiate(Rock, new Vector3(3, 0, nextSpawnZ + 120), Quaternion.identity);
+            if (LeftBarrier)
+            {
+                Instantiate(Rock90, new Vector3(nextSpawnX + 100, 0, 417), Quaternion.identity);
+            }
+            if (CenterBarrier)
+            {
+                Instantiate(Rock90, new Vector3(nextSpawnX + 100, 0, 420), Quaternion.identity);
+            }
+            if (RightBarrier)
+            {
+                Instantiate(Rock90, new Vector3(nextSpawnX + 100, 0, 423), Quaternion.identity);
+            }
         }
     }
 
@@ -217,6 +242,8 @@ public class BallMove : MonoBehaviour
             animator.speed = 1.5f;
 
             slipTriger = true;
+            //_rigidbody.isKinematic = true;//物理法則を一旦切る
+            //StartCoroutine(BlinkDamagePanel((int)(damageAmount / 10)));
 
             StartCoroutine(PlayAnimations());
         }
@@ -230,17 +257,32 @@ public class BallMove : MonoBehaviour
         }
     }
 
+
     private IEnumerator PlayAnimations()
     {
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(0).length);
         animator.SetTrigger("GetUp");
         animator.speed = 1.0f;
-
+        _rigidbody.isKinematic = false;
         if (!isDisplaying)
         {
             StartCoroutine(ShowSpeechBubble());
         }
     }
+
+    //private IEnumerator BlinkDamagePanel(int blinkCount)
+    //{
+    //    if (damagePanel != null)
+    //    {
+    //        for (int i = 0; i < blinkCount; i++)
+    //        {
+    //            damagePanel.SetActive(true); // Panelを表示
+    //            yield return new WaitForSeconds(0.5f); // 0.5秒間表示
+    //            damagePanel.SetActive(false); // Panelを非表示
+    //            yield return new WaitForSeconds(0.5f); // 0.5秒間待機
+    //        }
+    //    }
+    //}
 
     private IEnumerator ShowSpeechBubble()
     {

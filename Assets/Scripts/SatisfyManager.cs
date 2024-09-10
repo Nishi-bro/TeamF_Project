@@ -72,7 +72,7 @@ public class SatisfyManager : MonoBehaviour
     }
     private void OnLeftButtonPressed(PanelSetup setup) // Qボタン
     {
-        if (setup.monitorName == "NebouMonitor" || setup.monitorName == "KakuninMonitor")
+        if (setup.monitorName == "NebouMonitor" || setup.monitorName == "KakuninMonitor" || setup.monitorName == "EigaMonitor" || setup.monitorName == "FasionMonitor")
         {
             IncreaseSatisfaction(setup); // 満足度を上昇させる処理
         }
@@ -90,7 +90,7 @@ public class SatisfyManager : MonoBehaviour
 
     private void OnRightButtonPressed(PanelSetup setup) // Eボタン
     {
-        if (setup.monitorName == "CookMonitor" || setup.monitorName == "GohanMonitor")
+        if (setup.monitorName == "CookMonitor" || setup.monitorName == "KouteiMonitor" || setup.monitorName == "AmuseMonitor" || setup.monitorName == "QuestionMonitor")
         {
             IncreaseSatisfaction(setup); // 満足度を上昇させる処理
         }

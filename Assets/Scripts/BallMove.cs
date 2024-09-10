@@ -66,9 +66,9 @@ public class BallMove : MonoBehaviour
     private void Update()
     {
         // Y座標を固定する
-        Vector3 position = transform.position;
-        position.y = 1f;
-        transform.position = position;
+        //Vector3 position = transform.position;
+        //position.y = 3f;
+        //transform.position = position;
         if (transform.position.z >= ChangeRotation1 && !hasChangedDirection)
         {
             hasChangedDirection = true;
@@ -142,9 +142,9 @@ public class BallMove : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, 0, 0);
         }
         // Y座標を固定する
-        Vector3 position = transform.position;
-        position.y = 1f;
-        transform.position = position;
+        //Vector3 position = transform.position;
+        //position.y = 1f;
+        //transform.position = position;
     }
 
     private IEnumerator MovePlayer(Vector3 direction)
@@ -238,7 +238,7 @@ public class BallMove : MonoBehaviour
 
             SetCountText();
 
-            animator.Play("Fall");
+            animator.Play("Fall" , 1);
             animator.speed = 1.5f;
 
             slipTriger = true;

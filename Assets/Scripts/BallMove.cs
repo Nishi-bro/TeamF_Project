@@ -238,7 +238,7 @@ public class BallMove : MonoBehaviour
 
             SetCountText();
 
-            animator.Play("Fall" , 1);
+            animator.SetTrigger("Fall");
             animator.speed = 1.5f;
 
             slipTriger = true;

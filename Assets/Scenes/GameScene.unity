@@ -1367,7 +1367,7 @@ RectTransform:
   m_GameObject: {fileID: 143589237}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.15, y: 1.9, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.9, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 537923489}
@@ -1375,8 +1375,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 6, y: 0}
-  m_SizeDelta: {x: -12, y: 0}
+  m_AnchoredPosition: {x: 5.5, y: 0}
+  m_SizeDelta: {x: -11, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &143589239
 MonoBehaviour:
@@ -1418,14 +1418,14 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 1782849633}
   m_FillRect: {fileID: 785487040}
   m_HandleRect: {fileID: 0}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 100
+  m_MaxValue: 10
   m_WholeNumbers: 0
-  m_Value: 100
+  m_Value: 10
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -11956,6 +11956,10 @@ MonoBehaviour:
   fallAnimation: Fall
   getUpAnimation: GetUp
   hpSlider: {fileID: 143589239}
+  HpPanel: {fileID: 1782849629}
+  Heartman: {fileID: 1428425983}
+  largeSize: {x: 704, y: 140}
+  originalSize: {x: 352, y: 70}
   _runspeed: 15
 --- !u!54 &794446314
 Rigidbody:
@@ -20747,7 +20751,7 @@ GameObject:
   - component: {fileID: 1782849633}
   - component: {fileID: 1782849632}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: HpPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20771,7 +20775,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: -30}
-  m_SizeDelta: {x: 352, y: 70}
+  m_SizeDelta: {x: 350, y: 70}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1782849632
 MonoBehaviour:
@@ -24504,7 +24508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4343643393279826758, guid: 47297d6d238b543b98a05d175c3975eb, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 352
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 4343643393279826758, guid: 47297d6d238b543b98a05d175c3975eb, type: 3}
       propertyPath: m_SizeDelta.y

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
 public class BallMove : MonoBehaviour
 {
     private int ManageTransform = 0;
@@ -38,6 +39,9 @@ public class BallMove : MonoBehaviour
 
 
 
+
+    private SatisfyManager SaManager;
+
     [SerializeField]
     private Slider hpSlider;
     private float hpmanage = 10; // HP管理に使う
@@ -46,6 +50,9 @@ public class BallMove : MonoBehaviour
     public GameObject Heartman; //kodomo
     public Vector2 largeSize = new Vector2(700, 120); // 一時的に大きくするサイズ
     public Vector2 originalSize = new Vector2(352, 70); // 元のパネルサイズ
+
+    public AudioClip seClip;  // 再生するSEを指定
+    private AudioSource audioSource;  // AudioSourceを参照
 
     [SerializeField]
     private float _runspeed = 10f; // RUNの速さ
@@ -68,6 +75,18 @@ public class BallMove : MonoBehaviour
         // 吹き出しを非表示にする
         speechBubble.enabled = false;
         speechBubble2.enabled = false;
+
+        audioSource = GetComponent<AudioSource>();
+
+        // もしaudioSourceがない場合、エラーを防ぐためにコンポーネントを自動で追加
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // AudioSourceの基本設定
+        audioSource.playOnAwake = false;  // 再生を自動では行わないようにする
+
     }
 
     private void Update()
@@ -125,6 +144,11 @@ public class BallMove : MonoBehaviour
         {
             SceneManager.LoadScene("GameOverTime");
         }
+
+        
+        GameObject obj = GameObject.Find("SatisfyManager"); //SatisfyManagerっていうオブジェクトを探す
+        SaManager = obj.GetComponent<SatisfyManager>(); //付いているスクリプトを取得
+        
     }
     private void LateUpdate()
     {
@@ -249,6 +273,11 @@ public class BallMove : MonoBehaviour
 
             slipTriger = true;
             _rigidbody.isKinematic = true;//物理法則を一旦切る
+
+            if (seClip != null)
+            {
+                audioSource.PlayOneShot(seClip);  // 一度だけ再生
+            }
             //StartCoroutine(BlinkDamagePanel((int)(damageAmount / 10)));
 
             StartCoroutine(FlashHPSlider(damageAmount));
@@ -259,9 +288,16 @@ public class BallMove : MonoBehaviour
         {
             SceneManager.LoadScene("GameOverCar");
         }
+        //if (other.gameObject.CompareTag("Finish"))
+        //{ 
+        //    SceneManager.LoadScene("ClearScene");
+        //}
         if (other.gameObject.CompareTag("Finish"))
         {
-            SceneManager.LoadScene("ClearScene");
+            if (SaManager.satisfaction <= 60)
+            {
+                SceneManager.LoadScene("ClearScene");
+            }
         }
     }
 
@@ -309,7 +345,7 @@ public class BallMove : MonoBehaviour
 
             // 再度パネルを非表示にする
             HpPanel.SetActive(false);
-            hpSlider.value = initialHpValue - damageAmount;
+                        hpSlider.value = initialHpValue - damageAmount;
             yield return new WaitForSeconds(0.3f); // 少し待機
 
             // HPを減らした値を表示

@@ -288,15 +288,15 @@ public class BallMove : MonoBehaviour
         {
             SceneManager.LoadScene("GameOverCar");
         }
-        //if (other.gameObject.CompareTag("Finish"))
-        //{ 
-        //    SceneManager.LoadScene("ClearScene");
-        //}
         if (other.gameObject.CompareTag("Finish"))
         {
             if (SaManager.satisfaction <= 60)
             {
-                SceneManager.LoadScene("ClearScene");
+                SceneManager.LoadScene("BadEnding");
+            }
+            else
+            {
+                SceneManager.LoadScene("GoodEnding");
             }
         }
     }

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+
 public class BallMove : MonoBehaviour
 {
     private int ManageTransform = 0;
@@ -36,9 +37,22 @@ public class BallMove : MonoBehaviour
     public string fallAnimation = "Fall"; // 転倒するアニメーションの名前
     public string getUpAnimation = "GetUp"; // 起き上がるアニメーションの名前
 
+
+
+
+    private SatisfyManager SaManager;
+
     [SerializeField]
     private Slider hpSlider;
-    private float hpmanage = 100; // HP管理に使う
+    private float hpmanage = 10; // HP管理に使う
+    private float damageAmount;
+    public GameObject HpPanel; // HPパネル oya
+    public GameObject Heartman; //kodomo
+    public Vector2 largeSize = new Vector2(700, 120); // 一時的に大きくするサイズ
+    public Vector2 originalSize = new Vector2(352, 70); // 元のパネルサイズ
+
+    public AudioClip seClip;  // 再生するSEを指定
+    private AudioSource audioSource;  // AudioSourceを参照
 
     [SerializeField]
     private float _runspeed = 10f; // RUNの速さ
@@ -61,6 +75,18 @@ public class BallMove : MonoBehaviour
         // 吹き出しを非表示にする
         speechBubble.enabled = false;
         speechBubble2.enabled = false;
+
+        audioSource = GetComponent<AudioSource>();
+
+        // もしaudioSourceがない場合、エラーを防ぐためにコンポーネントを自動で追加
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        // AudioSourceの基本設定
+        audioSource.playOnAwake = false;  // 再生を自動では行わないようにする
+
     }
 
     private void Update()
@@ -118,6 +144,11 @@ public class BallMove : MonoBehaviour
         {
             SceneManager.LoadScene("GameOverTime");
         }
+
+        
+        GameObject obj = GameObject.Find("SatisfyManager"); //SatisfyManagerっていうオブジェクトを探す
+        SaManager = obj.GetComponent<SatisfyManager>(); //付いているスクリプトを取得
+        
     }
     private void LateUpdate()
     {
@@ -233,8 +264,7 @@ public class BallMove : MonoBehaviour
             other.gameObject.SetActive(false);
 
             RimitTime -= 5;
-            hpSlider.value -= 20;
-            hpmanage -= 20;
+            damageAmount = 2;
 
             SetCountText();
 
@@ -243,7 +273,14 @@ public class BallMove : MonoBehaviour
 
             slipTriger = true;
             _rigidbody.isKinematic = true;//物理法則を一旦切る
+
+            if (seClip != null)
+            {
+                audioSource.PlayOneShot(seClip);  // 一度だけ再生
+            }
             //StartCoroutine(BlinkDamagePanel((int)(damageAmount / 10)));
+
+            StartCoroutine(FlashHPSlider(damageAmount));
 
             StartCoroutine(PlayAnimations());
         }
@@ -251,9 +288,16 @@ public class BallMove : MonoBehaviour
         {
             SceneManager.LoadScene("GameOverCar");
         }
+        //if (other.gameObject.CompareTag("Finish"))
+        //{ 
+        //    SceneManager.LoadScene("ClearScene");
+        //}
         if (other.gameObject.CompareTag("Finish"))
         {
-            SceneManager.LoadScene("ClearScene");
+            if (SaManager.satisfaction <= 60)
+            {
+                SceneManager.LoadScene("ClearScene");
+            }
         }
     }
 
@@ -270,19 +314,60 @@ public class BallMove : MonoBehaviour
         }
     }
 
-    //private IEnumerator BlinkDamagePanel(int blinkCount)
-    //{
-    //    if (damagePanel != null)
-    //    {
-    //        for (int i = 0; i < blinkCount; i++)
-    //        {
-    //            damagePanel.SetActive(true); // Panelを表示
-    //            yield return new WaitForSeconds(0.5f); // 0.5秒間表示
-    //            damagePanel.SetActive(false); // Panelを非表示
-    //            yield return new WaitForSeconds(0.5f); // 0.5秒間待機
-    //        }
-    //    }
-    //}
+    private IEnumerator FlashHPSlider(float damageAmount)
+    {
+        // 現在のHPスライダーの値を取得
+        float initialHpValue = hpSlider.value;
+        RectTransform panelRectTransform = HpPanel.GetComponent<RectTransform>();
+        RectTransform panelRectTransformchild = Heartman.GetComponent<RectTransform>();
+
+        // 2回表示させる（ダメージ前のHP値を表示）
+        for (int i = 0; i < 1; i++)
+        {
+            
+                                                   
+            HpPanel.SetActive(false);// パネルを非表示にする
+            yield return new WaitForSeconds(0.3f); // 少し待機
+
+            // パネルを再表示して現在のHPを再表示
+            HpPanel.SetActive(true);
+            panelRectTransform.sizeDelta = largeSize;
+            panelRectTransformchild.sizeDelta = largeSize;
+            hpSlider.value = initialHpValue;
+            yield return new WaitForSeconds(0.3f); // 少し待機
+
+            HpPanel.SetActive(false);// パネルを非表示にする
+            yield return new WaitForSeconds(0.3f); // 少し待機
+
+            HpPanel.SetActive(true);
+            hpSlider.value = initialHpValue; // 現在のHPを表示
+            yield return new WaitForSeconds(0.3f); // 少し待機
+
+            // 再度パネルを非表示にする
+            HpPanel.SetActive(false);
+                        hpSlider.value = initialHpValue - damageAmount;
+            yield return new WaitForSeconds(0.3f); // 少し待機
+
+            // HPを減らした値を表示
+            HpPanel.SetActive(true);
+            hpSlider.value = initialHpValue - damageAmount;
+            yield return new WaitForSeconds(0.3f); // 少し待機
+
+            HpPanel.SetActive(false);
+            yield return new WaitForSeconds(0.3f); // 少し待機
+
+
+        }
+
+        // 実際のダメージ反映
+        hpmanage -= damageAmount;
+        HpPanel.SetActive(true);
+        panelRectTransform.sizeDelta = originalSize;
+        panelRectTransformchild.sizeDelta = originalSize;
+
+        // スライダーの更新
+        SetCountText();
+    }
 
     private IEnumerator ShowSpeechBubble()
     {

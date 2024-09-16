@@ -13,9 +13,17 @@ public class BallMove : MonoBehaviour
 
     public float ChangeRotation1 = 420f; //420fでx軸方向に回転
     private bool hasChangedDirection = false; // Z座標が420に達したかどうかを記録するフラグ
+    public float ChangeRotation2 = 1094f; //1096fでx軸方向に回転
+    private bool hasChangedDirection2nd = false; // Z座標が420に達したかどうかを記録するフラグ
+    public float ChangeRotation3 = 1482f; //1282fでx軸方向に回転
+    private bool hasChangedDirection3rd = false; // Z座標が420に達したかどうかを記録するフラグ
 
     public float RimitTime = 180;
     public Text TimeText; // 時間管理に使う関数
+
+    public Text DecTimeText;
+    public GameObject DecTimePanel;
+    private Coroutine scoreCoroutine; // コルーチンの参照を保持する（時間管理に使う）
 
     public GameObject Rock; // 岩のプレハブ
     public GameObject Rock90; // 90度回転した岩のプレハブ
@@ -23,8 +31,9 @@ public class BallMove : MonoBehaviour
     public GameObject Heart; // ハートのプレハブ
     private bool LeftBarrier, CenterBarrier, RightBarrier;
     private int nextSpawnZ = 30; // 次に生成するZ位置の初期値
-    private int nextSpawnX = 20; // 次に生成するX位置の初期値
+    private int nextSpawnX = -20; // 次に生成するX位置の初期値
     System.Random random_man = new System.Random(); // 障害物のランダム生成に使う
+    private int readyBarrier = 0;
 
     public Image speechBubble; // 吹き出しのImageコンポーネント
     public Sprite damageSprite; // 吹き出しで表示するスプライト
@@ -37,7 +46,8 @@ public class BallMove : MonoBehaviour
     public string fallAnimation = "Fall"; // 転倒するアニメーションの名前
     public string getUpAnimation = "GetUp"; // 起き上がるアニメーションの名前
 
-
+    public Transform playerTransform; // キャラクターの位置を参照するためのTransform
+    public Text positionText;         // 表示するText UI
 
 
     private SatisfyManager SaManager;
@@ -50,6 +60,9 @@ public class BallMove : MonoBehaviour
     public GameObject Heartman; //kodomo
     public Vector2 largeSize = new Vector2(700, 120); // 一時的に大きくするサイズ
     public Vector2 originalSize = new Vector2(352, 70); // 元のパネルサイズ
+
+    private int decreaseTime;
+
 
     public AudioClip seClip;  // 再生するSEを指定
     private AudioSource audioSource;  // AudioSourceを参照
@@ -67,9 +80,8 @@ public class BallMove : MonoBehaviour
         animator.Play("FastRun1", 0); // アニメーションクリップの名前
 
         _rigidbody = GetComponent<Rigidbody>();
-        _rigidbody.constraints = RigidbodyConstraints.FreezePositionY; // Y軸方向の移動を固定
+        _rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
-        StartCoroutine(DecreaseScore());
         TimeText.text = "Time: " + RimitTime.ToString();
 
         // 吹き出しを非表示にする
@@ -91,17 +103,37 @@ public class BallMove : MonoBehaviour
 
     private void Update()
     {
-        // Y座標を固定する
-        //Vector3 position = transform.position;
-        //position.y = 3f;
-        //transform.position = position;
         if (transform.position.z >= ChangeRotation1 && !hasChangedDirection)
         {
             hasChangedDirection = true;
+            _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
             // 進行方向をX軸に変更
             moveDirection = Vector3.right;
             // 右方向に回転させる
             transform.rotation = Quaternion.Euler(0, 90, 0); // Y軸方向に90度回転
+            _rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            ManageTransform = 0;
+        }
+        if (transform.position.x >= ChangeRotation2 && !hasChangedDirection2nd)
+        {
+            hasChangedDirection2nd = true;
+            _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
+            // 進行方向をZ軸に変更
+            moveDirection = Vector3.forward;
+            // 左方向に回転させる
+            transform.rotation = Quaternion.Euler(0, 0, 0); // Y軸方向に-90度回転
+            _rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            ManageTransform = 0;
+        }
+        if (transform.position.z >= ChangeRotation3 && !hasChangedDirection3rd)
+        {
+            hasChangedDirection3rd = true;
+            _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
+            // 進行方向をZ軸に変更
+            moveDirection = Vector3.right;
+            // 左方向に回転させる
+            transform.rotation = Quaternion.Euler(0, 90, 0); // Y軸方向に90度回転
+            _rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             ManageTransform = 0;
         }
 
@@ -125,16 +157,26 @@ public class BallMove : MonoBehaviour
             MoveForward();
         }
 
-        if (transform.position.z >= nextSpawnZ)
+        if (transform.position.z >= nextSpawnZ && transform.position.x <= 30)
         {
-            SpawnBarrier(); // 障害物を生成する処理
-            nextSpawnZ += 20; // 次の生成位置を更新
+            SpawnBarrier1st(); // 障害物を生成する処理
+            nextSpawnZ += 30; // 次の生成位置を更新
+            Debug.Log("1");
         }
         if (transform.position.x >= nextSpawnX)
         {
-            SpawnBarrier(); // 障害物を生成する処理
-            nextSpawnX += 20;
+            SpawnBarrier2nd(); // 障害物を生成する処理
+            nextSpawnX += 30;
+            Debug.Log("2");
+
         }
+        if (transform.position.z >= nextSpawnZ)
+        {
+            SpawnBarrier3rd(); // 障害物を生成する処理
+            nextSpawnZ += 30; // 次の生成位置を更新
+            Debug.Log("3");
+        }
+
 
         if (hpmanage <= 0)
         {
@@ -145,21 +187,52 @@ public class BallMove : MonoBehaviour
             SceneManager.LoadScene("GameOverTime");
         }
 
-        
+        // slipTrigerがfalseで、コルーチンが動いていない場合、コルーチンを開始
+        if (!slipTriger && scoreCoroutine == null)
+        {
+            scoreCoroutine = StartCoroutine(DecreaseScore());
+        }
+
+        // slipTrigerがtrueになったらコルーチンを停止し、参照をnullにする
+        if (slipTriger && scoreCoroutine != null)
+        {
+            StopCoroutine(scoreCoroutine);
+            scoreCoroutine = null;
+        }
+
         GameObject obj = GameObject.Find("SatisfyManager"); //SatisfyManagerっていうオブジェクトを探す
         SaManager = obj.GetComponent<SatisfyManager>(); //付いているスクリプトを取得
-        
+
+        // キャラクターのX座標とZ座標を取得
+        float playerX = playerTransform.position.x;
+        float playerZ = playerTransform.position.z;
+
+        // テキストの内容を更新
+        positionText.text = "進行度: " + Mathf.RoundToInt((playerX + playerZ) / 2680 * 100) + "%";
+
     }
+
+
+
     private void LateUpdate()
     {
         // Y軸の回転のみを維持し、X軸とZ軸の回転をリセットする
         transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+        // Y座標を1に固定
+        Vector3 position = transform.position;
+        position.y = 1f;
+        transform.position = position;
     }
+
+
+
 
     private void MoveForward()
     {
         Vector3 forwardMovement = moveDirection * _runspeed * Time.deltaTime;
         _rigidbody.MovePosition(_rigidbody.position + forwardMovement);
+
+
 
         // 移動方向に応じた回転を行う
         if (moveDirection == Vector3.right)
@@ -174,7 +247,7 @@ public class BallMove : MonoBehaviour
         }
         // Y座標を固定する
         //Vector3 position = transform.position;
-        //position.y = 1f;
+
         //transform.position = position;
     }
 
@@ -188,11 +261,14 @@ public class BallMove : MonoBehaviour
 
         Vector3 targetPosition = startPosition + lateralMove + forwardMove;
 
+        targetPosition.y = 1f;
+
         float consumeTime = 0f;
         while (consumeTime < Timerag)
         {
             consumeTime += Time.deltaTime;
             _rigidbody.MovePosition(Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp01(consumeTime / Timerag)));
+            targetPosition.y = 1f;
             yield return null;
         }
         _rigidbody.MovePosition(targetPosition);
@@ -202,15 +278,16 @@ public class BallMove : MonoBehaviour
 
     private IEnumerator DecreaseScore()
     {
-        while (RimitTime > 0)
+        while (RimitTime > 0 && !slipTriger) // slipTrigerがtrueならループを抜ける
         {
             RimitTime--;
             SetCountText();
             yield return new WaitForSeconds(1f);
         }
+        scoreCoroutine = null;
     }
 
-    void SpawnBarrier()　// 障害物の設定
+    void SpawnBarrier1st()
     {
         LeftBarrier = Random.value < 0.6f;
         CenterBarrier = Random.value < 0.6f;
@@ -226,7 +303,7 @@ public class BallMove : MonoBehaviour
             else
                 RightBarrier = false;
         }
-        if (ChangeRotation1 > transform.position.z + 120) //420までの障害物生成
+        if (ChangeRotation1 > transform.position.z + 150) //420までの障害物生成
         {
             if (LeftBarrier)
             {
@@ -240,20 +317,94 @@ public class BallMove : MonoBehaviour
             {
                 Instantiate(Rock, new Vector3(2.3f, 0, nextSpawnZ + 120), Quaternion.identity);
             }
-        } else if (transform.position.x > 20)
+            //NewSpawnZ 450 made
+        }
+    }
+
+    void SpawnBarrier2nd()　// 障害物の設定
+    {
+        
+        LeftBarrier = Random.value < 0.9f;
+        CenterBarrier = Random.value < 0.9f;
+        RightBarrier = Random.value < 0.9f;
+
+        if (LeftBarrier && CenterBarrier && RightBarrier)
+        {
+            int? except = random_man.Next(1, 3);
+            if (except == 1)
+                LeftBarrier = false;
+            else if (except == 2)
+                CenterBarrier = false;
+            else
+                RightBarrier = false;
+        }
+        if (transform.position.x > 0 && transform.position.x < 990)
         {
             if (LeftBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 100, 0, 417), Quaternion.identity);
+                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 417), Quaternion.identity);
             }
             if (CenterBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 100, 0, 420), Quaternion.identity);
+                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 420), Quaternion.identity);
             }
             if (RightBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 100, 0, 423), Quaternion.identity);
+                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 423), Quaternion.identity);
             }
+        }//980notoki newSpawnX 1010
+        if (transform.position.x >= 990 && transform.position.x <= 1089)
+        {
+            if (LeftBarrier)
+            {
+                Instantiate(Rock90, new Vector3(1091, 0, nextSpawnZ + readyBarrier), Quaternion.identity);
+            }
+            if (CenterBarrier)
+            {
+                Instantiate(Rock90, new Vector3(1094, 0, nextSpawnZ + readyBarrier), Quaternion.identity);
+            }
+            if (RightBarrier)
+            {
+                Instantiate(Rock90, new Vector3(1097, 0, nextSpawnZ + readyBarrier), Quaternion.identity);
+            }
+            readyBarrier += 30;//4回呼び出し Z450 480 510 540
+            
+        }
+
+        
+    }
+    void SpawnBarrier3rd()
+    {
+        LeftBarrier = Random.value < 0.9f;
+        CenterBarrier = Random.value < 0.9f;
+        RightBarrier = Random.value < 0.9f;
+
+        if (LeftBarrier && CenterBarrier && RightBarrier)
+        {
+            int? except = random_man.Next(1, 3);
+            if (except == 1)
+                LeftBarrier = false;
+            else if (except == 2)
+                CenterBarrier = false;
+            else
+                RightBarrier = false;
+        }
+        if (transform.position.z > 425 && ChangeRotation3 > transform.position.z + 120)
+        {
+            if (LeftBarrier)
+            {
+                Instantiate(Rock, new Vector3(1091, 0, nextSpawnZ + 130), Quaternion.identity);
+            }
+            if (CenterBarrier)
+            {
+                Instantiate(Rock, new Vector3(1094, 0, nextSpawnZ + 130), Quaternion.identity);
+            }
+            if (RightBarrier)
+            {
+                Instantiate(Rock, new Vector3(1097, 0, nextSpawnZ + 130), Quaternion.identity);
+            }
+            // デバッグ用ログ追加
+
         }
     }
 
@@ -264,7 +415,9 @@ public class BallMove : MonoBehaviour
             other.gameObject.SetActive(false);
 
             RimitTime -= 5;
-            damageAmount = 2;
+            decreaseTime = 5;
+
+            damageAmount = 2;//ハート1個ダメージ 
 
             SetCountText();
 
@@ -320,7 +473,8 @@ public class BallMove : MonoBehaviour
         float initialHpValue = hpSlider.value;
         RectTransform panelRectTransform = HpPanel.GetComponent<RectTransform>();
         RectTransform panelRectTransformchild = Heartman.GetComponent<RectTransform>();
-
+        SetCountText();
+        DecTimePanel.SetActive(true);
         // 2回表示させる（ダメージ前のHP値を表示）
         for (int i = 0; i < 1; i++)
         {
@@ -358,13 +512,12 @@ public class BallMove : MonoBehaviour
 
 
         }
-
+        DecTimePanel.SetActive(false);
         // 実際のダメージ反映
         hpmanage -= damageAmount;
         HpPanel.SetActive(true);
         panelRectTransform.sizeDelta = originalSize;
         panelRectTransformchild.sizeDelta = originalSize;
-
         // スライダーの更新
         SetCountText();
     }
@@ -385,13 +538,25 @@ public class BallMove : MonoBehaviour
         isDisplaying = false;
         slipTriger = false;
         animator.speed = 1.0f;
+
     }
 
     void SetCountText()
     {
-        if (TimeText != null)
+        if (!slipTriger)
         {
-            TimeText.text = "Time: " + RimitTime.ToString();
+            if (TimeText != null)
+            {
+                TimeText.text = "Time: " + RimitTime.ToString();
+
+            }
         }
+        else
+        {
+            TimeText.text = "-" + decreaseTime + "sec";
+            DecTimeText.text = "-" + decreaseTime + "sec";
+        }
+        
+        
     }
 }

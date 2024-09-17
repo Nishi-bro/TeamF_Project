@@ -13,9 +13,21 @@ public class SatisfyManager : MonoBehaviour
         public Text satisfactionText; // 満足度を表示するテキスト
         public string monitorName; // モニター名（例：CookMonitor）
     }
-
+    public AudioClip GoodComunicationClip;  // 再生するSEを指定
+    private AudioSource audioSource;
     public int satisfaction = 25; // 現在の満足度
     public PanelSetup[] panelSetups;
+    // 満足度上昇時に浮き上がるテキスト管理
+    public float moveSpeed = 2f;  // 上昇速度
+    public float fadeTime = 1f;   // フェードアウトまでの時間
+
+    //public GameObject floatingTextPrefab;  // フローティングテキスト用のPrefab
+    //public Transform canvasTransform;
+    //public Text FloatingText;
+    public int UpdownScore;
+
+
+
 
     private void Start()
     {
@@ -39,6 +51,8 @@ public class SatisfyManager : MonoBehaviour
                 Debug.LogWarning("RightButton is not assigned in PanelSetup.");
             }
         }
+
+
 
         // 3秒ごとに満足度を更新するコルーチンを開始
         StartCoroutine(UpdateSatisfaction());
@@ -75,6 +89,11 @@ public class SatisfyManager : MonoBehaviour
         if (setup.monitorName == "NebouMonitor" || setup.monitorName == "KakuninMonitor" || setup.monitorName == "EigaMonitor" || setup.monitorName == "FasionMonitor")
         {
             IncreaseSatisfaction(setup); // 満足度を上昇させる処理
+            if (GoodComunicationClip != null)
+            {
+                GetComponent<AudioSource>().Play();
+
+            }
         }
         else
         {
@@ -93,6 +112,11 @@ public class SatisfyManager : MonoBehaviour
         if (setup.monitorName == "CookMonitor" || setup.monitorName == "KouteiMonitor" || setup.monitorName == "AmuseMonitor" || setup.monitorName == "QuestionMonitor")
         {
             IncreaseSatisfaction(setup); // 満足度を上昇させる処理
+            if (GoodComunicationClip != null)
+            {
+                GetComponent<AudioSource>().Play();
+
+            }
         }
         else
         {
@@ -108,7 +132,8 @@ public class SatisfyManager : MonoBehaviour
     
     private void IncreaseSatisfaction(PanelSetup setup)
     {
-        satisfaction += 15;
+        UpdownScore = 15;
+        satisfaction = satisfaction + UpdownScore;
         satisfaction = Mathf.Clamp(satisfaction, 0, 100);
         setup.satisfactionText.text = "彼女満足度:" + satisfaction.ToString() + "%";
         UpdateColor(setup);
@@ -131,7 +156,8 @@ public class SatisfyManager : MonoBehaviour
 
     private void DecreaseSatisfaction(PanelSetup setup)
     {
-        satisfaction -= 5;
+        UpdownScore = -5;
+        satisfaction = satisfaction + UpdownScore;
         satisfaction = Mathf.Clamp(satisfaction, 0, 100);
         setup.satisfactionText.text = "彼女満足度:" + satisfaction.ToString() + "%";
         UpdateColor(setup);
@@ -139,7 +165,8 @@ public class SatisfyManager : MonoBehaviour
 
     public void IgnoreSatisfactionOnDefaultMonitor()
     {
-        satisfaction -= 10;
+        UpdownScore = -10;
+        satisfaction = satisfaction + UpdownScore;
         satisfaction = Mathf.Clamp(satisfaction, 0, 100);
 
         // すべてのパネルセットアップのテキストを更新
@@ -165,4 +192,18 @@ public class SatisfyManager : MonoBehaviour
             setup.satisfactionText.color = new Color(0f, 0f, 1f); // 青色
         }
     }
+
+    //public IEnumerator FadeIn()
+    //{
+    //    FloatingText.text = UpdownScore + "%";
+    //    while (true)
+    //    {
+    //        for (int i = 0; i < 255; i++)
+    //        {
+    //            FloatingText.color = FloatingText.color + new Color32(0, 0, 0, 1);
+    //            yield return new WaitForSeconds(0.01f);
+    //        }
+    //    }
+
+    //}
 }

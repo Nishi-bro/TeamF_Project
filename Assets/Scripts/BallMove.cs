@@ -65,6 +65,7 @@ public class BallMove : MonoBehaviour
 
 
     public AudioClip seClip;  // 再生するSEを指定
+    
     private AudioSource audioSource;  // AudioSourceを参照
 
     [SerializeField]
@@ -160,7 +161,7 @@ public class BallMove : MonoBehaviour
         if (transform.position.z >= nextSpawnZ && transform.position.x <= 30)
         {
             SpawnBarrier1st(); // 障害物を生成する処理
-            nextSpawnZ += 30; // 次の生成位置を更新
+            nextSpawnZ += 35; // 次の生成位置を更新
             Debug.Log("1");
         }
         if (transform.position.x >= nextSpawnX)
@@ -173,7 +174,7 @@ public class BallMove : MonoBehaviour
         if (transform.position.z >= nextSpawnZ)
         {
             SpawnBarrier3rd(); // 障害物を生成する処理
-            nextSpawnZ += 30; // 次の生成位置を更新
+            nextSpawnZ += 25; // 次の生成位置を更新
             Debug.Log("3");
         }
 
@@ -408,6 +409,8 @@ public class BallMove : MonoBehaviour
         }
     }
 
+
+
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Rock"))
@@ -437,9 +440,32 @@ public class BallMove : MonoBehaviour
 
             StartCoroutine(PlayAnimations());
         }
+
         if (other.gameObject.CompareTag("Cars"))
         {
-            SceneManager.LoadScene("GameOverCar");
+            other.gameObject.SetActive(false);
+
+            RimitTime -= 10;
+            decreaseTime = 10;
+
+            damageAmount = 6;//ハート3個ダメージ 
+
+            SetCountText();
+
+            animator.SetTrigger("Fall");
+            animator.speed = 1.5f;
+
+            slipTriger = true;
+            _rigidbody.isKinematic = true;//物理法則を一旦切る
+
+            if (seClip != null)
+            {
+                audioSource.PlayOneShot(seClip);  // 一度だけ再生車の音も鳴らしたい
+            }
+
+            StartCoroutine(FlashHPSlider(damageAmount));
+
+            StartCoroutine(PlayAnimations());
         }
         if (other.gameObject.CompareTag("Finish"))
         {

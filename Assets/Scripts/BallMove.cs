@@ -27,6 +27,10 @@ public class BallMove : MonoBehaviour
 
     public GameObject Rock; // 岩のプレハブ
     public GameObject Rock90; // 90度回転した岩のプレハブ
+    public GameObject Trash; // ゴミ袋のプレハブ
+    public GameObject Trash90; // 90度回転したゴミ袋のプレハブ
+    public GameObject Bicyclecle; // 自転車のプレハブ
+    public GameObject Bicyclecle90; // 90度回転した自転車のプレハブ
 
     public GameObject Heart; // ハートのプレハブ
     private bool LeftBarrier, CenterBarrier, RightBarrier;
@@ -339,7 +343,22 @@ public class BallMove : MonoBehaviour
             else
                 RightBarrier = false;
         }
-        if (transform.position.x > 0 && transform.position.x < 990)
+        if (transform.position.x > 0 && transform.position.x < 500)
+        {
+            if (LeftBarrier)
+            {
+                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 417), Quaternion.identity);
+            }
+            if (CenterBarrier)
+            {
+                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 420), Quaternion.identity);
+            }
+            if (RightBarrier)
+            {
+                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 423), Quaternion.identity);
+            }
+        }
+        if (transform.position.x >= 500 && transform.position.x < 990)
         {
             if (LeftBarrier)
             {
@@ -390,19 +409,19 @@ public class BallMove : MonoBehaviour
             else
                 RightBarrier = false;
         }
-        if (transform.position.z > 425 && ChangeRotation3 > transform.position.z + 120)
+        if (transform.position.z > 425 && ChangeRotation3 > transform.position.z + 140)
         {
             if (LeftBarrier)
             {
-                Instantiate(Rock, new Vector3(1091, 0, nextSpawnZ + 130), Quaternion.identity);
+                Instantiate(Trash, new Vector3(1091, 2, nextSpawnZ + 130), Quaternion.identity);
             }
             if (CenterBarrier)
             {
-                Instantiate(Rock, new Vector3(1094, 0, nextSpawnZ + 130), Quaternion.identity);
+                Instantiate(Trash, new Vector3(1094, 2, nextSpawnZ + 130), Quaternion.identity);
             }
             if (RightBarrier)
             {
-                Instantiate(Rock, new Vector3(1097, 0, nextSpawnZ + 130), Quaternion.identity);
+                Instantiate(Trash, new Vector3(1097, 2, nextSpawnZ + 130), Quaternion.identity);
             }
             // デバッグ用ログ追加
 
@@ -462,6 +481,62 @@ public class BallMove : MonoBehaviour
             {
                 audioSource.PlayOneShot(seClip);  // 一度だけ再生車の音も鳴らしたい
             }
+
+            StartCoroutine(FlashHPSlider(damageAmount));
+
+            StartCoroutine(PlayAnimations());
+        }
+
+        if (other.gameObject.CompareTag("Bicycle"))
+        {
+            other.gameObject.SetActive(false);
+
+            RimitTime -= 2;
+            decreaseTime = 5;
+
+            damageAmount = 2;//ハート1個ダメージ 
+
+            SetCountText();
+
+            animator.SetTrigger("Fall");
+            animator.speed = 1.5f;
+
+            slipTriger = true;
+            _rigidbody.isKinematic = true;//物理法則を一旦切る
+
+            if (seClip != null)
+            {
+                audioSource.PlayOneShot(seClip);  // 一度だけ再生
+            }
+            //StartCoroutine(BlinkDamagePanel((int)(damageAmount / 10)));
+
+            StartCoroutine(FlashHPSlider(damageAmount));
+
+            StartCoroutine(PlayAnimations());
+        }
+
+        if (other.gameObject.CompareTag("Trash"))
+        {
+            other.gameObject.SetActive(false);
+
+            RimitTime -= 8;
+            decreaseTime = 8;
+
+            damageAmount = 1;//ハート0.5個ダメージ 
+
+            SetCountText();
+
+            animator.SetTrigger("Fall");
+            animator.speed = 1.5f;
+
+            slipTriger = true;
+            _rigidbody.isKinematic = true;//物理法則を一旦切る
+
+            if (seClip != null)
+            {
+                audioSource.PlayOneShot(seClip);  // 一度だけ再生
+            }
+            //StartCoroutine(BlinkDamagePanel((int)(damageAmount / 10)));
 
             StartCoroutine(FlashHPSlider(damageAmount));
 

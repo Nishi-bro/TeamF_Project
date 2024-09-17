@@ -9,6 +9,8 @@ TagManager:
   - atari
   - Cars
   - TurnTrigger
+  - Bicycle
+  - Trash
   layers:
   - Default
   - TransparentFX

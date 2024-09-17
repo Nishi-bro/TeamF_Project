@@ -3,10 +3,11 @@ using UnityEngine;
 public class ManageSmapho : MonoBehaviour
 {
     public GameObject DefaultMonitor; // Canvasオブジェクト（彼女からの通信）
-    public GameObject CookMonitor; // Canvasオブジェクト
     public SatisfyManager satisfyManager; // SatisfyManager の参照
     private float monitorDisplayTime = 0f; // Monitorが表示された時刻を記録
     private bool monitorShown = false; // Monitorが表示されたかどうか
+    public GameObject[] panels; // パネルの配列
+    private int currentPanelIndex = -1; // 現在表示中のパネルのインデックス
 
     void Start()
     {
@@ -21,7 +22,7 @@ public class ManageSmapho : MonoBehaviour
         }
 
         // 5秒後にviewMonitorメソッドを実行
-        Invoke("viewMonitor", 5f);
+        Invoke("viewMonitor", 5f);//デフォルトモニター表示
     }
 
     void Update()
@@ -33,7 +34,7 @@ public class ManageSmapho : MonoBehaviour
                 monitorDisplayTime = Time.time; // 現在の時間を記録
                 monitorShown = true; // Monitorが表示されたとマーク
             }
-        }
+        }//3byou taikini tukau
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -61,7 +62,7 @@ public class ManageSmapho : MonoBehaviour
             }
         }
 
-        bool hasSecondsPassed = monitorShown && (Time.time - monitorDisplayTime >= 3f);
+        bool hasSecondsPassed = monitorShown && (Time.time - monitorDisplayTime >= 3f);//3 byougo
 
         if (hasSecondsPassed)
         {
@@ -101,11 +102,14 @@ public class ManageSmapho : MonoBehaviour
 
     void ExtraMonitor()
     {
-        // CookMonitor Canvasを表示
-        if (CookMonitor != null)
+        int newIndex = Random.Range(0, panels.Length);
+        while (newIndex == currentPanelIndex)
         {
-            CookMonitor.SetActive(true);
+            newIndex = Random.Range(0, panels.Length);
         }
+        // 選択したパネルを表示
+        panels[newIndex].SetActive(true);
+        currentPanelIndex = newIndex;
 
         // 5秒後に再びDefaultMonitorを表示
         Invoke("viewMonitor", 5f);

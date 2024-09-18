@@ -61,6 +61,6 @@ public class CanvasSwitcher : MonoBehaviour
     // "Countdown"シーンをロードするメソッド
     void LoadCountdownScene()
     {
-        SceneManager.LoadScene("Countdawn"); // シーン名で指定してロード
+        SceneManager.LoadScene("startButton"); // シーン名で指定してロード
     }
 }

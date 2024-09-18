@@ -309,7 +309,7 @@ public class BallMove : MonoBehaviour
     void SpawnBarrier1st()
     {
         LeftBarrier = Random.value < 0.6f;
-        CenterBarrier = Random.value < 0.6f;
+        CenterBarrier = Random.value < 0.7f;
         RightBarrier = Random.value < 0.6f;
 
         if (LeftBarrier && CenterBarrier && RightBarrier)
@@ -343,9 +343,9 @@ public class BallMove : MonoBehaviour
     void SpawnBarrier2nd()　// 障害物の設定
     {
         
-        LeftBarrier = Random.value < 0.9f;
-        CenterBarrier = Random.value < 0.9f;
-        RightBarrier = Random.value < 0.9f;
+        LeftBarrier = Random.value < 0.77f;
+        CenterBarrier = Random.value < 0.85f;
+        RightBarrier = Random.value < 0.77f;
 
         if (LeftBarrier && CenterBarrier && RightBarrier)
         {
@@ -476,7 +476,7 @@ public class BallMove : MonoBehaviour
             Instantiate(Bicyclecle, bicyclePosition, rotation);
         }
     }
-    // 20%の確率でTrashG、80%の確率でTrashを生成するメソッド
+    // 20%の確率でTrashG、10%でbush,80%の確率でTrashを生成するメソッド
     void InstantiateRandom3(Vector3 position)
     {
         if (Random.value < 0.2f)  

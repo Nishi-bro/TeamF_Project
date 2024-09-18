@@ -6,6 +6,13 @@ using System.Threading;
 
 public class GameManager4 : MonoBehaviour
 {
+
+    public AudioSource seAudioSource; // SEを再生するためのAudioSource
+    public GameObject canvas;
+    void Start()
+    {
+        
+    }
     public void StartButton()
     {
         //SceneManager.LoadScene("Countdawn");
@@ -13,4 +20,17 @@ public class GameManager4 : MonoBehaviour
         //SceneManager.UnloadSceneAsync("Countdawn");
         SceneManager.LoadScene("IntroScene");
     }
+    public void TitleButton()
+    {
+        SceneManager.LoadScene("startButton");
+    }
+    public void ZukanButton()
+    {
+        canvas.SetActive(true);
+    }
+    public void CloseButton()
+    {
+        canvas.SetActive(false);
+    }
+
 }

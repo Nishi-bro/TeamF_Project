@@ -19070,7 +19070,7 @@ MonoBehaviour:
   ChangeRotation1: 420
   ChangeRotation2: 1094
   ChangeRotation3: 1482
-  RimitTime: 120
+  RimitTime: 108
   TimeText: {fileID: 502698105}
   DecTimeText: {fileID: 1659433729}
   DecTimePanel: {fileID: 252332222}
@@ -19096,7 +19096,7 @@ MonoBehaviour:
   largeSize: {x: 704, y: 140}
   originalSize: {x: 352, y: 70}
   seClip: {fileID: 8300000, guid: 2723949bff03d44da99494f22e31fd31, type: 3}
-  _runspeed: 30
+  _runspeed: 35
 --- !u!54 &794446314
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -39173,7 +39173,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7995051691917796536, guid: f5384045cdcbc4c9cbef575fdaef51ff, type: 3}
       propertyPath: m_Text
-      value: "\u672C\u5F53\u306B\u5927\u5B66\u306B\u7740\u304F\u306E\uFF1F\n\u7559\u5E74\u3059\u308B\u3063\u3066\u306A\u3063\u305F\u3089\n\u5225\u308C\u3061\u3083\u3046\u3093\u3060\u3088"
+      value: "\u672C\u5F53\u306B\u5927\u5B66\u306B\u7740\u304F\u306E\uFF1F\n\u7D76\u5BFE\u306B\u7559\u5E74\u3057\u306A\u3044\u3063\u3066\n\u8A00\u3063\u3066\u305F\u3088\u306D\uFF01"
       objectReference: {fileID: 0}
     - target: {fileID: 8415656265744891357, guid: f5384045cdcbc4c9cbef575fdaef51ff, type: 3}
       propertyPath: m_Pivot.x

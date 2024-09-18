@@ -55,9 +55,10 @@ public class ManageSmapho : MonoBehaviour
                 // 満足度を減少させる
                 satisfyManager.IgnoreSatisfactionOnDefaultMonitor();
 
+                satisfyManager.PlayAudioClip(satisfyManager.FailComunicationClip);
                 // DefaultMonitorを非表示にする
                 HideDefaultMonitor();
-                Invoke("viewMonitor", 7f);
+                Invoke("viewMonitor", 10f);
                 monitorShown = false;
             }
         }
@@ -71,10 +72,11 @@ public class ManageSmapho : MonoBehaviour
                 // 3秒経過後に満足度を減少させ、モニターを隠す
                 satisfyManager.IgnoreSatisfactionOnDefaultMonitor();
 
+                satisfyManager.PlayAudioClip(satisfyManager.FailComunicationClip);
                 // DefaultMonitorを非表示にする
                 HideDefaultMonitor();
                 monitorShown = false; // Monitorが非表示になるのでリセット
-                Invoke("viewMonitor", 7f);
+                Invoke("viewMonitor", 10f);
             }
 
         }
@@ -112,6 +114,6 @@ public class ManageSmapho : MonoBehaviour
         currentPanelIndex = newIndex;
 
         // 5秒後に再びDefaultMonitorを表示
-        Invoke("viewMonitor", 7f);
+        Invoke("viewMonitor", 10f);
     }
 }

@@ -11,6 +11,7 @@ TagManager:
   - TurnTrigger
   - Bicycle
   - Trash
+  - TrashG
   layers:
   - Default
   - TransparentFX

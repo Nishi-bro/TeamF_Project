@@ -28,7 +28,7 @@ public class BallMove : MonoBehaviour
     public GameObject Rock; // 岩のプレハブ
     public GameObject Rock90; // 90度回転した岩のプレハブ
     public GameObject Trash; // ゴミ袋のプレハブ
-    public GameObject Trash90; // 90度回転したゴミ袋のプレハブ
+    public GameObject TrashG; // ゴミ袋のプレハブ
     public GameObject Bicyclecle; // 自転車のプレハブ
     public GameObject Bicyclecle90; // 90度回転した自転車のプレハブ
 
@@ -69,6 +69,7 @@ public class BallMove : MonoBehaviour
 
 
     public AudioClip seClip;  // 再生するSEを指定
+
     
     private AudioSource audioSource;  // AudioSourceを参照
 
@@ -135,11 +136,20 @@ public class BallMove : MonoBehaviour
             hasChangedDirection3rd = true;
             _rigidbody.constraints = RigidbodyConstraints.FreezePositionY;
             // 進行方向をZ軸に変更
+
             moveDirection = Vector3.right;
             // 左方向に回転させる
             transform.rotation = Quaternion.Euler(0, 90, 0); // Y軸方向に90度回転
             _rigidbody.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+            Camera.main.transform.rotation = Quaternion.Euler(
+            Camera.main.transform.rotation.eulerAngles.x - 15,  // X軸に15度加算
+            Camera.main.transform.rotation.eulerAngles.y,       // Y軸の回転はそのまま
+            Camera.main.transform.rotation.eulerAngles.z        // Z軸の回転はそのまま
+            );
             ManageTransform = 0;
+
+
         }
 
         if (!isMoving && !slipTriger)
@@ -262,7 +272,7 @@ public class BallMove : MonoBehaviour
         Vector3 startPosition = transform.position;
 
         Vector3 lateralMove = direction.normalized * 3; // 横方向に3ユニット移動
-        Vector3 forwardMove = transform.forward.normalized * 3; // 前方に3ユニット移動
+        Vector3 forwardMove = transform.forward.normalized * 5; // 前方に3ユニット移動
 
         Vector3 targetPosition = startPosition + lateralMove + forwardMove;
 
@@ -316,15 +326,15 @@ public class BallMove : MonoBehaviour
         {
             if (LeftBarrier)
             {
-                Instantiate(Rock, new Vector3(-3.7f, 0, nextSpawnZ + 120), Quaternion.identity);
+                InstantiateRandom1(new Vector3(-3.7f, 0, nextSpawnZ + 120));
             }
             if (CenterBarrier)
             {
-                Instantiate(Rock, new Vector3(-0.7f, 0, nextSpawnZ + 120), Quaternion.identity);
+                InstantiateRandom1(new Vector3(-0.7f, 0, nextSpawnZ + 120));
             }
             if (RightBarrier)
             {
-                Instantiate(Rock, new Vector3(2.3f, 0, nextSpawnZ + 120), Quaternion.identity);
+                InstantiateRandom1(new Vector3(2.3f, 0, nextSpawnZ + 120));
             }
             //NewSpawnZ 450 made
         }
@@ -366,15 +376,15 @@ public class BallMove : MonoBehaviour
         {
             if (LeftBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 417), Quaternion.identity);
+                InstantiateRandom2(new Vector3(nextSpawnX + 120, 0, 417));
             }
             if (CenterBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 420), Quaternion.identity);
+                InstantiateRandom2(new Vector3(nextSpawnX + 120, 0, 420));
             }
             if (RightBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 423), Quaternion.identity);
+                InstantiateRandom2(new Vector3(nextSpawnX + 120, 0, 423));
             }
         }//980notoki newSpawnX 1010
         if (transform.position.x >= 990 && transform.position.x <= 1089)
@@ -419,21 +429,69 @@ public class BallMove : MonoBehaviour
         {
             if (LeftBarrier)
             {
-                Instantiate(Trash, new Vector3(1091, 2, nextSpawnZ + 130), Quaternion.identity);
+                InstantiateRandom3(new Vector3(1091, 1, nextSpawnZ + 130));
             }
             if (CenterBarrier)
             {
-                Instantiate(Trash, new Vector3(1094, 2, nextSpawnZ + 130), Quaternion.identity);
+                InstantiateRandom3(new Vector3(1094, 1, nextSpawnZ + 130));
             }
             if (RightBarrier)
             {
-                Instantiate(Trash, new Vector3(1097, 2, nextSpawnZ + 130), Quaternion.identity);
+                InstantiateRandom3(new Vector3(1097, 1, nextSpawnZ + 130));
             }
             // デバッグ用ログ追加
 
         }
     }
 
+
+    // 40%の確率でRock、60%の確率でBicycleを生成するメソッド
+    void InstantiateRandom1(Vector3 position)
+    {
+        if (Random.value < 0.4f)  // 40%の確率でRock
+        {
+            Instantiate(Rock, position, Quaternion.identity);
+        }
+        else  // 60%の確率でBicycle
+        {
+            // Y座標を1高くするために、新しい位置を設定
+            Vector3 bicyclePosition = new Vector3(position.x, position.y + 1, position.z);
+            Instantiate(Bicyclecle, bicyclePosition, Quaternion.identity);
+        }
+    }
+    // 40%の確率でTrash、60%の確率でBicycleを生成するメソッド
+    void InstantiateRandom2(Vector3 position)
+    {
+        Quaternion rotation = Quaternion.Euler(0, 90, 0);
+        if (Random.value < 0.4f)  // 40%の確率でTrash
+        {
+            Vector3 TrashPosition = new Vector3(position.x, position.y + 2, position.z);
+            
+            Instantiate(Trash, TrashPosition, rotation);
+        }
+        else  // 60%の確率でBicycle
+        {
+            // Y座標を1高くするために、新しい位置を設定
+            Vector3 bicyclePosition = new Vector3(position.x, position.y + 1, position.z);
+            Instantiate(Bicyclecle, bicyclePosition, rotation);
+        }
+    }
+    // 20%の確率でTrashG、80%の確率でTrashを生成するメソッド
+    void InstantiateRandom3(Vector3 position)
+    {
+        if (Random.value < 0.2f)  
+        {
+            Vector3 TrashPosition2 = new Vector3(position.x, position.y + 1, position.z);
+
+            Instantiate(TrashG, TrashPosition2, Quaternion.identity);
+        }
+        else 
+        {
+            // Y座標を1高くするために、新しい位置を設定
+            Vector3 TrashGPosition = new Vector3(position.x, position.y + 1, position.z);
+            Instantiate(Trash, TrashGPosition, Quaternion.identity);
+        }
+    }
 
 
     void OnTriggerEnter(Collider other)
@@ -497,10 +555,10 @@ public class BallMove : MonoBehaviour
         {
             other.gameObject.SetActive(false);
 
-            RimitTime -= 2;
-            decreaseTime = 5;
+            RimitTime -= 3;
+            decreaseTime = 3;
 
-            damageAmount = 2;//ハート1個ダメージ 
+            damageAmount = 3;//ハート1個ダメージ 
 
             SetCountText();
 
@@ -529,6 +587,33 @@ public class BallMove : MonoBehaviour
             decreaseTime = 8;
 
             damageAmount = 1;//ハート0.5個ダメージ 
+
+            SetCountText();
+
+            animator.SetTrigger("Fall");
+            animator.speed = 1.5f;
+
+            slipTriger = true;
+            _rigidbody.isKinematic = true;//物理法則を一旦切る
+
+            if (seClip != null)
+            {
+                audioSource.PlayOneShot(seClip);  // 一度だけ再生
+            }
+            //StartCoroutine(BlinkDamagePanel((int)(damageAmount / 10)));
+
+            StartCoroutine(FlashHPSlider(damageAmount));
+
+            StartCoroutine(PlayAnimations());
+        }
+        if (other.gameObject.CompareTag("TrashG"))
+        {
+            other.gameObject.SetActive(false);
+
+            RimitTime -= 10;
+            decreaseTime = 10;
+
+            damageAmount = 2;//ハート1個ダメージ 
 
             SetCountText();
 

@@ -150,7 +150,7 @@ public class BallMove : MonoBehaviour
                 ManageTransform -= 1;
             }
 
-            if (Input.GetKeyDown(KeyCode.D) && ManageTransform < 1)
+            if (Input.GetKeyDown(KeyCode.K) && ManageTransform < 1)
             {
                 StartCoroutine(MovePlayer(transform.right)); // 右に動くコルーチンを開始
                 ManageTransform += 1;
@@ -290,7 +290,11 @@ public class BallMove : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
         scoreCoroutine = null;
+
     }
+
+
+
 
     void SpawnBarrier1st()
     {
@@ -393,11 +397,13 @@ public class BallMove : MonoBehaviour
 
         
     }
+
+
     void SpawnBarrier3rd()
     {
         LeftBarrier = Random.value < 0.9f;
         CenterBarrier = Random.value < 0.9f;
-        RightBarrier = Random.value < 0.9f;
+        RightBarrier = Random.value < 0.9f;//出現率
 
         if (LeftBarrier && CenterBarrier && RightBarrier)
         {

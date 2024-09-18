@@ -11,6 +11,6 @@ public class GameManager4 : MonoBehaviour
         //SceneManager.LoadScene("Countdawn");
         //Thread.Sleep(3000);
         //SceneManager.UnloadSceneAsync("Countdawn");
-        SceneManager.LoadScene("Countdawn");
+        SceneManager.LoadScene("IntroScene");
     }
 }

@@ -150,7 +150,7 @@ public class BallMove : MonoBehaviour
                 ManageTransform -= 1;
             }
 
-            if (Input.GetKeyDown(KeyCode.K) && ManageTransform < 1)
+            if (Input.GetKeyDown(KeyCode.D) && ManageTransform < 1)
             {
                 StartCoroutine(MovePlayer(transform.right)); // 右に動くコルーチンを開始
                 ManageTransform += 1;

@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/startButton.unity
     guid: 403362754eba518489d295b3865d9ee2
   - enabled: 1
+    path: Assets/Scenes/IntroScene.unity
+    guid: a2a3f7d4e9d2e4d798d66b528409b5ff
+  - enabled: 1
     path: Assets/Scenes/Countdawn.unity
     guid: 348175339cf3cd048a0c3cfbc0eeee88
   - enabled: 1

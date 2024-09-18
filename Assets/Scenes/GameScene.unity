@@ -18968,8 +18968,8 @@ MonoBehaviour:
   Rock90: {fileID: 4622979633813124208, guid: 29ad6bae3ea774ec9b9f8e5c7d815523, type: 3}
   Trash: {fileID: 1452185909489467888, guid: cb2eafdb33f5647aba483f797ba95346, type: 3}
   Trash90: {fileID: 3689338344638642707, guid: 64b83854c4ea94978b3ca66a0e2d901e, type: 3}
-  Bicyclecle: {fileID: 0}
-  Bicyclecle90: {fileID: 0}
+  Bicyclecle: {fileID: 919132149155446097, guid: e3a436e0ac6013f41999e23f2cc91370, type: 3}
+  Bicyclecle90: {fileID: 919132149155446097, guid: e3a436e0ac6013f41999e23f2cc91370, type: 3}
   Heart: {fileID: 8791354712412432934, guid: dba506063e54840c2b3c18ca9009ff6c, type: 3}
   speechBubble: {fileID: 835025050}
   damageSprite: {fileID: 21300000, guid: c58762367e9c84ab5a879341f6fd2fd2, type: 3}

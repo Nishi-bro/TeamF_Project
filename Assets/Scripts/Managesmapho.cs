@@ -57,7 +57,7 @@ public class ManageSmapho : MonoBehaviour
 
                 // DefaultMonitorを非表示にする
                 HideDefaultMonitor();
-                Invoke("viewMonitor", 5f);
+                Invoke("viewMonitor", 7f);
                 monitorShown = false;
             }
         }
@@ -74,7 +74,7 @@ public class ManageSmapho : MonoBehaviour
                 // DefaultMonitorを非表示にする
                 HideDefaultMonitor();
                 monitorShown = false; // Monitorが非表示になるのでリセット
-                Invoke("viewMonitor", 5f);
+                Invoke("viewMonitor", 7f);
             }
 
         }
@@ -112,6 +112,6 @@ public class ManageSmapho : MonoBehaviour
         currentPanelIndex = newIndex;
 
         // 5秒後に再びDefaultMonitorを表示
-        Invoke("viewMonitor", 5f);
+        Invoke("viewMonitor", 7f);
     }
 }

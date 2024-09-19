@@ -107,5 +107,6 @@ public class VideoPlayerScript : MonoBehaviour
         Debug.LogError("動画の再生エラー: " + message);
         // エラー時はcanvas0（エラーハンドリング用キャンバス）を表示
         ShowCanvas(canvas0);
+        SceneManager.LoadScene("GameScene");
     }
 }

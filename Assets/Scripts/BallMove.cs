@@ -361,15 +361,15 @@ public class BallMove : MonoBehaviour
         {
             if (LeftBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 417), Quaternion.identity);
+                Instantiate(Rock, new Vector3(nextSpawnX + 120, 0, 417), Quaternion.identity);
             }
             if (CenterBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 420), Quaternion.identity);
+                Instantiate(Rock, new Vector3(nextSpawnX + 120, 0, 420), Quaternion.identity);
             }
             if (RightBarrier)
             {
-                Instantiate(Rock90, new Vector3(nextSpawnX + 120, 0, 423), Quaternion.identity);
+                Instantiate(Rock, new Vector3(nextSpawnX + 120, 0, 423), Quaternion.identity);
             }
         }
         if (transform.position.x >= 500 && transform.position.x < 990)

@@ -11,7 +11,7 @@ public class GameManager4 : MonoBehaviour
     public GameObject canvas;
     void Start()
     {
-        
+        Screen.SetResolution(1920, 1080, false); // 第三引数 false はウィンドウモード
     }
     public void StartButton()
     {

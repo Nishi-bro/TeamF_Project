@@ -13999,7 +13999,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: bf39d3b7dc60348aeb03284f5d6bc4f7, type: 3}
     m_FontSize: 50
     m_FontStyle: 0
     m_BestFit: 0
@@ -19067,6 +19067,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Timerag: 0.2
+  newPosition: {x: 7, y: 1, z: 420}
   ChangeRotation1: 420
   ChangeRotation2: 1094
   ChangeRotation3: 1482

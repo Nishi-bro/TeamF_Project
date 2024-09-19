@@ -11,6 +11,9 @@ public class BallMove : MonoBehaviour
     public float Timerag = 0.2f; // 移動にかかる時間の関数
     private bool slipTriger = false;
 
+    public Vector3 newPosition; // 7に達した時に変更したい位置をInspectorで指定
+    private bool hasPositionChanged = false; // 変更が1回だけ実行されるように管理するフラグ
+
     public float ChangeRotation1 = 420f; //420fでx軸方向に回転
     private bool hasChangedDirection = false; // Z座標が420に達したかどうかを記録するフラグ
     public float ChangeRotation2 = 1094f; //1096fでx軸方向に回転
@@ -152,6 +155,17 @@ public class BallMove : MonoBehaviour
 
         }
 
+
+        //if (transform.position.x >= 8f && !hasPositionChanged)
+        //{
+        //    transform.position = newPosition;
+        //    ManageTransform = 0;
+        //    hasPositionChanged = true; // 一度処理を実行したらフラグを立てる
+        //}
+
+
+
+
         if (!isMoving && !slipTriger)
         {
             if (Input.GetKeyDown(KeyCode.A) && ManageTransform > -1)
@@ -283,6 +297,7 @@ public class BallMove : MonoBehaviour
         {
             consumeTime += Time.deltaTime;
             _rigidbody.MovePosition(Vector3.Lerp(startPosition, targetPosition, Mathf.Clamp01(consumeTime / Timerag)));
+
             targetPosition.y = 1f;
             yield return null;
         }
